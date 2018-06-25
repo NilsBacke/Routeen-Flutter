@@ -57,7 +57,7 @@ class HomePageView extends HomeState {
             new Align(
               alignment: Alignment.centerLeft,
               child: new Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(10.0),
                 child: new Text(
                   "Today's Tasks:",
                   style: new TextStyle(
