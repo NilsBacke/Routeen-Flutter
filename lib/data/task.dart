@@ -1,9 +1,9 @@
 class Task {
   String name;
-  bool isCompleted;
+  int isCompleted; // 0 if false, 1 if true
   int id;
 
-  Task(this.name);
+  Task(this.name, this.isCompleted);
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
@@ -17,8 +17,8 @@ class Task {
   }
 
   Task.fromMap(Map<String, dynamic> map) {
-    this.name = map["username"];
-    this.isCompleted = map["password"];
+    this.name = map["name"];
+    this.isCompleted = map["isCompleted"];
     this.id = map["id"];
   }
 }

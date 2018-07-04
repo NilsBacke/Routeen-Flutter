@@ -4,27 +4,32 @@ import 'edit_tasks_state.dart';
 class EditTasksView extends EditTasksState {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-        title: new Text("Routeen"),
-        centerTitle: true,
-        backgroundColor: const Color(0xFF1dcaff),
-      ),
-      body: new Container(
-        child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            new Padding(
-              padding: const EdgeInsets.all(12.0),
-            ),
-            _addTaskField(),
-            new Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-            ),
-            _tasksList(),
-          ],
+    return new WillPopScope(
+      child: new Scaffold(
+        appBar: new AppBar(
+          title: new Text("Routeen"),
+          centerTitle: true,
+          backgroundColor: const Color(0xFF1dcaff),
+        ),
+        body: new Container(
+          child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              new Padding(
+                padding: const EdgeInsets.all(12.0),
+              ),
+              _addTaskField(),
+              new Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+              ),
+              _tasksList(),
+            ],
+          ),
         ),
       ),
+      onWillPop: () {
+        Navigator.pop(context, tasks);
+      },
     );
   }
 
@@ -59,13 +64,31 @@ class EditTasksView extends EditTasksState {
       child: new ListView.builder(
         itemCount: tasks.length,
         itemBuilder: (BuildContext context, int index) {
-          return new Column(
-            children: <Widget>[
-              new ListTile(
-                title: new Text(tasks[index]),
+          return new Dismissible(
+            key: Key(tasks[index].id.toString()),
+            background: Container(
+              color: Colors.red,
+              padding: const EdgeInsets.all(12.0),
+              child: new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  new Icon(Icons.delete_outline),
+                  new Icon(Icons.delete_outline),
+                ],
               ),
-              new Divider(),
-            ],
+            ),
+            onDismissed: (direction) {
+              removeTask(context, index);
+            },
+            child: new Column(
+              children: <Widget>[
+                new ListTile(
+                  title: new Text(tasks[index].name),
+                ),
+                new Divider(),
+              ],
+            ),
           );
         },
       ),

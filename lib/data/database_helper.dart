@@ -39,7 +39,7 @@ class DatabaseHelper {
 
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
-        "CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnName TEXT, $columnIsCompleted TEXT)");
+        "CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnName TEXT, $columnIsCompleted INTEGER)");
   }
 
   Future<int> insert(Task task) async {
@@ -60,11 +60,24 @@ class DatabaseHelper {
     return null;
   }
 
+  Future<List> getAllTasks() async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery("SELECT * FROM $tableName");
+
+    return result.toList();
+  }
+
   Future<int> deleteTask(String name) async {
     var dbClient = await db;
 
     return await dbClient
         .delete(tableName, where: "$columnName = ?", whereArgs: [name]);
+  }
+
+  Future<int> updateTask(Task task) async {
+    var dbClient = await db;
+    return await dbClient.update(tableName, task.toMap(),
+        where: "$columnId = ?", whereArgs: [task.id]);
   }
 
   Future close() async {
