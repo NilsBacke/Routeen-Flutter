@@ -109,6 +109,6 @@ abstract class HomeState extends State<Home> {
   /// returns an int that represents the day of the month
   int getToday() {
     DateTime today = DateTime.now();
-    return today.day;
+    return today.day; // an integer
   }
 }
