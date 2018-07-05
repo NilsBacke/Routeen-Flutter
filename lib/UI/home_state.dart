@@ -27,17 +27,26 @@ abstract class HomeState extends State<Home> {
     dayLastCompleted = getToday() - 1;
     getStreak();
     getTasks();
-    print("${getToday()}");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    saveTasks();
   }
 
   /// Retrieves the saved tasks in the database
   /// and adds them to the list of tasks
-  getTasks() async {
+  void getTasks() async {
     var fetched = await db.getAllTasks();
+    bool needToResetChecks = getToday() != dayLastCompleted;
     for (int i = 0; i < fetched.length; i++) {
       setState(() {
         tasks.add(Task.fromMap(fetched[i]));
       });
+      if (needToResetChecks) {
+        alterTask(false, i);
+      }
     }
   }
 
@@ -54,6 +63,23 @@ abstract class HomeState extends State<Home> {
     updateStreak(); // check if streak should be incremented
   }
 
+  void saveTasks() async {
+    tasks.forEach((task) async {
+      await db.updateTask(new Task(task.name, task.isCompleted));
+    });
+  }
+
+  /// update streak if applicable
+  void updateStreak() {
+    // increment streak
+    if (allCompleted() && getToday() - dayLastCompleted == 1) {
+      incrementStreak();
+      saveStreak();
+      dayLastCompleted = getToday();
+      incrementStreakDialog();
+    }
+  }
+
   /// check if all of the tasks in the list are completed
   bool allCompleted() {
     for (Task task in tasks) {
@@ -62,15 +88,6 @@ abstract class HomeState extends State<Home> {
       }
     }
     return true;
-  }
-
-  /// update streak if applicable
-  void updateStreak() {
-    if (allCompleted() && getToday() - dayLastCompleted == 1) {
-      incrementStreak();
-      saveStreak();
-      dayLastCompleted = getToday();
-    }
   }
 
   /// increment the streak by one
@@ -92,7 +109,7 @@ abstract class HomeState extends State<Home> {
     final SharedPreferences prefs = await _prefs;
     setState(() {
       streak = (prefs.getInt('streak') ?? 0);
-      dayLastCompleted = (prefs.getInt('dayLastCompleted') ?? 0);
+      dayLastCompleted = (prefs.getInt('dayLastCompleted') ?? getToday() - 1);
     });
     checkForLossOfStreak();
   }
@@ -128,8 +145,32 @@ abstract class HomeState extends State<Home> {
       context: context,
       builder: (BuildContext context) {
         return new AlertDialog(
-          title: new Text("Sorry, you lost your streak"),
+          title: new Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              new Image.asset("img/frown.png"),
+              new Text("Sorry, you lost your streak"),
+            ],
+          ),
           content: new Text("Start up another one!"),
+        );
+      },
+    );
+  }
+
+  void incrementStreakDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              new Image.asset("img/happy.png"),
+              new Text("Excellent!"),
+            ],
+          ),
+          content: new Text("Come back tomorrow to continue your streak."),
         );
       },
     );

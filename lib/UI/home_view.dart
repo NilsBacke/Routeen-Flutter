@@ -82,6 +82,7 @@ class HomeView extends HomeState {
           shrinkWrap: true,
           itemCount: tasks.length,
           itemBuilder: (BuildContext context, int index) {
+            print("list is completed: ${tasks[index].isCompleted}");
             return new Column(
               children: <Widget>[
                 new CheckboxListTile(
