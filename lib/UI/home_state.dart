@@ -148,11 +148,24 @@ abstract class HomeState extends State<Home> {
           title: new Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              new Image.asset("img/frown.png"),
-              new Text("Sorry, you lost your streak"),
+              new Image.asset(
+                "img/frown.png",
+                width: 100.0,
+                height: 100.0,
+              ),
+              new Text(
+                "Sorry, you lost your streak",
+                textAlign: TextAlign.center,
+                style: new TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
             ],
           ),
-          content: new Text("Start up another one!"),
+          content: new Text(
+            "Start up another one!",
+            textAlign: TextAlign.center,
+          ),
         );
       },
     );
@@ -166,11 +179,24 @@ abstract class HomeState extends State<Home> {
           title: new Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              new Image.asset("img/happy.png"),
-              new Text("Excellent!"),
+              new Image.asset(
+                "img/happy.png",
+                width: 100.0,
+                height: 100.0,
+              ),
+              new Text(
+                "Well Done!",
+                textAlign: TextAlign.center,
+                style: new TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
             ],
           ),
-          content: new Text("Come back tomorrow to continue your streak."),
+          content: new Text(
+            "Come back tomorrow to continue your streak.",
+            textAlign: TextAlign.center,
+          ),
         );
       },
     );
