@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
 
 abstract class HomeState extends State<Home> {
   int streak = 0; // current day streak
-  int dayLastCompleted = 0;
+  int dayLastCompleted;
   String keepItUp = "Keep It Up!"; // text that changes depending on streak
   List<Task> tasks = <Task>[];
 
@@ -24,6 +24,7 @@ abstract class HomeState extends State<Home> {
   @override
   initState() {
     super.initState();
+    dayLastCompleted = getToday() - 1;
     getStreak();
     getTasks();
     print("${getToday()}");
@@ -65,7 +66,7 @@ abstract class HomeState extends State<Home> {
 
   /// update streak if applicable
   void updateStreak() {
-    if (allCompleted() && dayLastCompleted != getToday()) {
+    if (allCompleted() && getToday() - dayLastCompleted == 1) {
       incrementStreak();
       saveStreak();
       dayLastCompleted = getToday();
@@ -93,6 +94,7 @@ abstract class HomeState extends State<Home> {
       streak = (prefs.getInt('streak') ?? 0);
       dayLastCompleted = (prefs.getInt('dayLastCompleted') ?? 0);
     });
+    checkForLossOfStreak();
   }
 
   /// go to the compose page and update the tasks list upon pop back to the home page
@@ -110,5 +112,33 @@ abstract class HomeState extends State<Home> {
   int getToday() {
     DateTime today = DateTime.now();
     return today.day; // an integer
+  }
+
+  void checkForLossOfStreak() {
+    if (getToday() - dayLastCompleted > 1) {
+      // loss of streak
+      lossOfStreakDialog();
+      resetStreak();
+      saveStreak();
+    }
+  }
+
+  void lossOfStreakDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text("Sorry, you lost your streak"),
+          content: new Text("Start up another one!"),
+        );
+      },
+    );
+  }
+
+  void resetStreak() {
+    setState(() {
+      streak = 0;
+    });
+    dayLastCompleted = getToday();
   }
 }
