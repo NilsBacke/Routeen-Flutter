@@ -36,6 +36,9 @@ abstract class EditTasksState extends State<EditTasks> {
   /// Adds the task to the task list
   /// Saves the task to the database
   void addTaskToList() {
+    if (controller.text == "") {
+      return;
+    }
     var name = controller.text;
     setState(() {
       tasks.add(new Task(name, 0)); // 0 for false
