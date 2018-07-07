@@ -131,6 +131,9 @@ abstract class HomeState extends State<Home> {
     return today.day; // an integer
   }
 
+  /// checks if the user's streak is lost
+  /// streak is lost if there was a more than one day gap
+  /// then performs appropriate actions
   void checkForLossOfStreak() {
     if (getToday() - dayLastCompleted > 1) {
       // loss of streak
@@ -140,6 +143,7 @@ abstract class HomeState extends State<Home> {
     }
   }
 
+  /// displays the dialog if the user's streak is lost
   void lossOfStreakDialog() {
     showDialog(
       context: context,
@@ -171,6 +175,7 @@ abstract class HomeState extends State<Home> {
     );
   }
 
+  /// displays the dialog if the user's streak is continued
   void incrementStreakDialog() {
     showDialog(
       context: context,
@@ -202,6 +207,8 @@ abstract class HomeState extends State<Home> {
     );
   }
 
+  /// resets the current streak
+  /// only called if the user's current streak is lost
   void resetStreak() {
     setState(() {
       streak = 0;
