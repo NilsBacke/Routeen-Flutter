@@ -11,6 +11,12 @@ dependencies:
   shared_preferences: "^0.4.2"
   sqflite: any
   path_provider: "^0.4.1"
+  flutter_launcher_icons: "^0.0.1"
+
+  flutter_icons:
+    image_path: "images/appicon.png"
+    android: true
+    ios: true
 
 dev_dependencies:
   flutter_test:
