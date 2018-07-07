@@ -43,7 +43,7 @@ class HomeView extends HomeState {
                 padding: const EdgeInsets.all(6.0),
               ),
               new Text(
-                keepItUp,
+                motivationText,
                 style: new TextStyle(
                   fontSize: 35.0,
                   fontWeight: FontWeight.w200,

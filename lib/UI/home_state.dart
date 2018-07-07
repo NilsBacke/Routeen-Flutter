@@ -6,6 +6,9 @@ import 'package:routeen/data/task.dart';
 import 'home_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+final String keepItUp = "Keep It Up!";
+final String startAnother = "Start up a streak!";
+
 class Home extends StatefulWidget {
   @override
   HomeView createState() => new HomeView();
@@ -14,7 +17,7 @@ class Home extends StatefulWidget {
 abstract class HomeState extends State<Home> {
   int streak = 0; // current day streak
   int dayLastCompleted;
-  String keepItUp = "Keep It Up!"; // text that changes depending on streak
+  String motivationText; // text that changes depending on streak
   List<Task> tasks = <Task>[];
 
   Future<SharedPreferences> _prefs =
@@ -27,6 +30,12 @@ abstract class HomeState extends State<Home> {
     dayLastCompleted = getToday() - 1;
     getStreak();
     getTasks();
+
+    if (streak == 0) {
+      motivationText = startAnother;
+    } else {
+      motivationText = keepItUp;
+    }
   }
 
   @override
@@ -94,6 +103,7 @@ abstract class HomeState extends State<Home> {
   void incrementStreak() {
     setState(() {
       streak++;
+      motivationText = keepItUp;
     });
   }
 
@@ -167,7 +177,7 @@ abstract class HomeState extends State<Home> {
             ],
           ),
           content: new Text(
-            "Start up another one!",
+            startAnother,
             textAlign: TextAlign.center,
           ),
         );
@@ -212,6 +222,7 @@ abstract class HomeState extends State<Home> {
   void resetStreak() {
     setState(() {
       streak = 0;
+      motivationText = startAnother;
     });
     dayLastCompleted = getToday();
   }
