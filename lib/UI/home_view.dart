@@ -12,6 +12,7 @@ class HomeView extends HomeState {
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.edit),
+            tooltip: "Edit tasks",
             onPressed: () {
               composePage(context);
             },
