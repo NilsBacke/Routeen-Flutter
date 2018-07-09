@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "28188254635",
+    "firebase_url": "https://routeen-1bb2c.firebaseio.com",
+    "project_id": "routeen-1bb2c",
+    "storage_bucket": "routeen-1bb2c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:28188254635:android:eb2d49cd41a8c77c",
+        "android_client_info": {
+          "package_name": "com.plushundred.routeen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "28188254635-0colvupr7vac130k2t3c037he8bk2ks7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.plushundred.routeen",
+            "certificate_hash": "5a9b28402571accf86a924fc0866377092664c71"
+          }
+        },
+        {
+          "client_id": "28188254635-0204b9p5d4qkl33d0f68us6vq494migi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbpzmGz28_jKakXv5X1rTIqxxbF7LS_rg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "28188254635-0204b9p5d4qkl33d0f68us6vq494migi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
