@@ -12,6 +12,9 @@ dependencies:
   sqflite: any
   path_provider: "^0.4.1"
   flutter_launcher_icons: "^0.0.1"
+  firebase_core: any
+  firebase_auth: any
+  google_sign_in: "^3.0.4"
 
 flutter_icons:
   image_path: "images/appicon.png"

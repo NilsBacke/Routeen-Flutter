@@ -14,6 +14,7 @@ class LoginView extends LoginState {
           physics: AlwaysScrollableScrollPhysics(),
           child: Center(
             child: Form(
+              key: formKey,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
@@ -62,6 +63,8 @@ class LoginView extends LoginState {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
         keyboardType: TextInputType.emailAddress,
+        validator: emailValidator,
+        controller: emailController,
         decoration: InputDecoration(
           hintText: 'Email',
           contentPadding: EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 16.0),
@@ -74,6 +77,8 @@ class LoginView extends LoginState {
   TextFormField passwordFormField() {
     return TextFormField(
       keyboardType: TextInputType.text,
+      validator: passwordValidator,
+      controller: passwordController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'Password',
@@ -93,9 +98,7 @@ class LoginView extends LoginState {
         child: MaterialButton(
           minWidth: 200.0,
           height: 42.0,
-          onPressed: () {
-            print("press");
-          },
+          onPressed: logIn,
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),
         ),
@@ -108,7 +111,7 @@ class LoginView extends LoginState {
       padding: const EdgeInsets.all(12.0),
       child: MaterialButton(
         onPressed: () {
-          print("pressed");
+          handleGoogleSignIn();
         },
         color: Colors.grey[100],
         elevation: 0.0,
