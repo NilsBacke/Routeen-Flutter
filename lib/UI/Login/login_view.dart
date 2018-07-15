@@ -14,17 +14,20 @@ class LoginView extends LoginState {
           },
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: <Widget>[
-                  titleText(),
-                  emailFormField(),
-                  passwordFormField(),
-                  logInButton(),
-                  signInWithGoogleButton(),
-                  signUpButton(),
-                ],
+            child: Form(
+              key: formKey,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  children: <Widget>[
+                    titleText(),
+                    emailFormField(),
+                    passwordFormField(),
+                    logInButton(),
+                    signInWithGoogleButton(),
+                    signUpButton(),
+                  ],
+                ),
               ),
             ),
           ),
