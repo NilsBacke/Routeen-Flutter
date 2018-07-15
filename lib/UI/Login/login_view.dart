@@ -6,34 +6,25 @@ class LoginView extends LoginState {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: GestureDetector(
-        onHorizontalDragEnd: (DragEndDetails details) {
-          dragSignUpPage(details);
-        },
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Center(
-            child: Form(
-              key: formKey,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
-                child: Container(
-                  height: MediaQuery.of(context).size.height - 12.0,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      titleText(),
-                      emailFormField(),
-                      passwordFormField(),
-                      logInButton(),
-                      signInWithGoogleButton(),
-                      signUpButton(),
-                    ],
-                  ),
-                ),
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        child: GestureDetector(
+          onHorizontalDragEnd: (DragEndDetails details) {
+            dragSignUpPage(details);
+          },
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: <Widget>[
+                  titleText(),
+                  emailFormField(),
+                  passwordFormField(),
+                  logInButton(),
+                  signInWithGoogleButton(),
+                  signUpButton(),
+                ],
               ),
             ),
           ),
@@ -110,9 +101,7 @@ class LoginView extends LoginState {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: MaterialButton(
-        onPressed: () {
-          handleGoogleSignIn();
-        },
+        onPressed: handleGoogleSignIn,
         color: Colors.grey[100],
         elevation: 0.0,
         child: Row(
@@ -144,26 +133,25 @@ class LoginView extends LoginState {
   }
 
   Widget signUpButton() {
-    return Expanded(
-      child: new Container(
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text("Don't have an account yet?"),
-              FlatButton(
-                child: Text(
-                  "Sign up",
-                  style: TextStyle(color: Colors.lightBlue),
-                ),
-                onPressed: () {
-                  signUpPage();
-                },
+    return Container(
+      padding: const EdgeInsets.only(top: 100.0),
+      child: Align(
+        alignment: Alignment(0.0, 1.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Don't have an account yet?"),
+            FlatButton(
+              child: Text(
+                "Sign up",
+                style: TextStyle(color: Colors.lightBlue),
               ),
-            ],
-          ),
+              onPressed: () {
+                signUpPage();
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -14,6 +14,7 @@ class SignUpView extends SignUpState {
         physics: AlwaysScrollableScrollPhysics(),
         child: Center(
           child: Form(
+            key: formKey,
             child: Padding(
               padding:
                   const EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
@@ -26,7 +27,7 @@ class SignUpView extends SignUpState {
                     nameFormField(),
                     emailFormField(),
                     passwordFormField(),
-                    signInButton(),
+                    signUpButton(),
                   ],
                 ),
               ),
@@ -42,6 +43,8 @@ class SignUpView extends SignUpState {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
         keyboardType: TextInputType.text,
+        controller: nameController,
+        validator: nameValidator,
         decoration: InputDecoration(
           hintText: 'Full name',
           contentPadding: EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 16.0),
@@ -56,6 +59,8 @@ class SignUpView extends SignUpState {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
         keyboardType: TextInputType.emailAddress,
+        controller: emailController,
+        validator: emailValidator,
         decoration: InputDecoration(
           hintText: 'Email',
           contentPadding: EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 16.0),
@@ -69,6 +74,8 @@ class SignUpView extends SignUpState {
     return TextFormField(
       keyboardType: TextInputType.text,
       obscureText: true,
+      controller: passwordController,
+      validator: passwordValidator,
       decoration: InputDecoration(
         hintText: 'Password',
         contentPadding: EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 16.0),
@@ -77,7 +84,7 @@ class SignUpView extends SignUpState {
     );
   }
 
-  Padding signInButton() {
+  Padding signUpButton() {
     return Padding(
       padding: EdgeInsets.only(top: 20.0),
       child: Material(
@@ -87,9 +94,7 @@ class SignUpView extends SignUpState {
         child: MaterialButton(
           minWidth: 200.0,
           height: 42.0,
-          onPressed: () {
-            print("press");
-          },
+          onPressed: signUpUser,
           color: Colors.lightBlueAccent,
           child: Text('Sign up', style: TextStyle(color: Colors.white)),
         ),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:routeen/UI/Login/signup_state.dart';
+import 'package:routeen/UI/home_state.dart';
 import 'login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -19,9 +20,9 @@ abstract class LoginState extends State<Login> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
-  logIn() {
+  logIn() async {
     if (formKey.currentState.validate()) {
-      signInWithEmail();
+      await signInWithEmail();
     }
   }
 
@@ -41,6 +42,7 @@ abstract class LoginState extends State<Login> {
       if (user != null) {
         //Log in was successfull
         print(user.email);
+        homePage();
       } else {
         //Log in was unsuccessfull
         showInValidDialog();
@@ -48,7 +50,7 @@ abstract class LoginState extends State<Login> {
     }
   }
 
-  Future<FirebaseUser> handleGoogleSignIn() async {
+  handleGoogleSignIn() async {
     GoogleSignInAccount googleUser = await _googleSignin.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     FirebaseUser user = await _auth.signInWithGoogle(
@@ -56,7 +58,7 @@ abstract class LoginState extends State<Login> {
       idToken: googleAuth.idToken,
     );
     print("signed in " + user.displayName);
-    return user;
+    homePage();
   }
 
   /// checks if the given email is valid
@@ -67,12 +69,16 @@ abstract class LoginState extends State<Login> {
     return null;
   }
 
-  /// checks if the given email is valid
+  /// checks if the given password is valid
   String passwordValidator(String val) {
-    if (val.isEmpty) {
-      return "Please enter a valid password.";
+    if (val.isEmpty || val.length < 7) {
+      return "Password must be at least 7 characters.";
     }
     return null;
+  }
+
+  homePage() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
   }
 
   signUpPage() {
