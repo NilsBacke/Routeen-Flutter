@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:routeen/UI/edit_tasks_state.dart';
+import 'edit_tasks_state.dart';
 import 'package:routeen/data/database_helper.dart';
 import 'package:routeen/data/task.dart';
 import 'home_view.dart';

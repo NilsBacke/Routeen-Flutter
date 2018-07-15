@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Login/login_state.dart';
 
-void main() => runApp(new MaterialApp(
+void main() => runApp(MaterialApp(
       title: "Routeen",
-      home: new Login(),
+      home: Login(),
     ));

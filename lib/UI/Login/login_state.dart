@@ -2,11 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:routeen/UI/Login/signup_state.dart';
-import 'package:routeen/UI/home_state.dart';
+import 'package:routeen/UI/tab_home.dart';
 import 'login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:flutter/services.dart' show PlatformException;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignin = new GoogleSignIn();
@@ -87,7 +85,7 @@ abstract class LoginState extends State<Login> {
   homePage() {
     Navigator
         .of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+        .pushReplacement(MaterialPageRoute(builder: (context) => TabBarHome()));
   }
 
   signUpPage() {

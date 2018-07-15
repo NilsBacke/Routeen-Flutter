@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Login/signup_view.dart';
-import 'package:routeen/UI/home_state.dart';
-import 'package:flutter/services.dart' show PlatformException;
+import 'package:routeen/UI/tab_home.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -73,7 +72,7 @@ abstract class SignUpState extends State<SignUp> {
   homePage() {
     Navigator
         .of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+        .pushReplacement(MaterialPageRoute(builder: (context) => TabBarHome()));
   }
 
   void showInValidDialog() {
