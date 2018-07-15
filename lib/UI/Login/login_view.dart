@@ -92,7 +92,7 @@ class LoginView extends LoginState {
         child: MaterialButton(
           minWidth: 200.0,
           height: 42.0,
-          onPressed: logIn,
+          onPressed: logInPressed,
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),
         ),

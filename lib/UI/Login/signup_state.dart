@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Login/signup_view.dart';
 import 'package:routeen/UI/home_state.dart';
+import 'package:flutter/services.dart' show PlatformException;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -24,15 +25,25 @@ abstract class SignUpState extends State<SignUp> {
   }
 
   signUpWithEmail() async {
-    FirebaseUser user = await _auth.createUserWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
-    );
-
-    var userUpdateInfo = new UserUpdateInfo();
-    userUpdateInfo.displayName = nameController.text;
-    await _auth.updateProfile(userUpdateInfo);
-    await user.reload();
+    FirebaseUser user;
+    try {
+      user = await _auth.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      if (user != null) {
+        var userUpdateInfo = new UserUpdateInfo();
+        userUpdateInfo.displayName = nameController.text;
+        await _auth.updateProfile(userUpdateInfo);
+        await user.reload();
+        homePage();
+      } else {
+        showInValidDialog();
+      }
+    }
     print("Email: ${user.email}");
   }
 
@@ -60,6 +71,28 @@ abstract class SignUpState extends State<SignUp> {
   }
 
   homePage() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+    Navigator
+        .of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+  }
+
+  void showInValidDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text("Invalid Login!"),
+          content: new Text(
+              "Please provide a valid email and password combination."),
+          actions: <Widget>[
+            new FlatButton(
+              color: Colors.blue,
+              child: new Text("Close"),
+              onPressed: null,
+            ),
+          ],
+        );
+      },
+    );
   }
 }
