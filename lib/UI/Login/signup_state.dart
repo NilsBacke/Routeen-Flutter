@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Login/signup_view.dart';
 import 'package:routeen/UI/tab_home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final Firestore _db = Firestore.instance;
 
 class SignUp extends StatefulWidget {
   @override
@@ -34,16 +38,22 @@ abstract class SignUpState extends State<SignUp> {
       print(e.toString());
     } finally {
       if (user != null) {
-        var userUpdateInfo = new UserUpdateInfo();
-        userUpdateInfo.displayName = nameController.text;
-        await _auth.updateProfile(userUpdateInfo);
-        await user.reload();
+        await addUserToDB(user, nameController.text);
         homePage();
       } else {
         showInValidDialog();
       }
     }
     print("Email: ${user.email}");
+  }
+
+  Future addUserToDB(FirebaseUser user, String name) async {
+    Map<String, Object> userMap = new Map();
+    userMap["name"] = name;
+    userMap["email"] = user.email;
+    _db.collection('users').document(user.uid).setData(userMap).then((val) {
+      print("user added");
+    });
   }
 
   String nameValidator(String val) {

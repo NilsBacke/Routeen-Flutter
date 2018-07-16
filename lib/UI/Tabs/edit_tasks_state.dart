@@ -1,7 +1,14 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/data/database_helper.dart';
 import 'package:routeen/data/task.dart';
 import 'edit_tasks_view.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final Firestore db = Firestore.instance;
 
 class EditTasks extends StatefulWidget {
   @override
@@ -11,25 +18,27 @@ class EditTasks extends StatefulWidget {
 abstract class EditTasksState extends State<EditTasks> {
   TextEditingController controller =
       new TextEditingController(); // for the add task EditText
-  List<Task> tasks = new List();
-  var db = new DatabaseHelper();
+  String userUID = '';
+  // List<Task> tasks = new List();
+  // var db = new DatabaseHelper();
 
   @override
   initState() {
     super.initState();
-    getTasks();
+    setUserUID();
+    // getTasks();
   }
 
   /// Retrieves the saved tasks in the database
   /// and adds them to the list of tasks
-  getTasks() async {
-    var fetched = await db.getAllTasks();
-    for (int i = 0; i < fetched.length; i++) {
-      setState(() {
-        tasks.add(Task.fromMap(fetched[i]));
-      });
-    }
-  }
+  // getTasks() async {
+  //   var fetched = await db.getAllTasks();
+  //   for (int i = 0; i < fetched.length; i++) {
+  //     setState(() {
+  //       tasks.add(Task.fromMap(fetched[i]));
+  //     });
+  //   }
+  // }
 
   /// On press of the add task button
   /// Creates a new task given the name from the add task EditText and
@@ -41,7 +50,6 @@ abstract class EditTasksState extends State<EditTasks> {
     }
     var name = controller.text;
     setState(() {
-      tasks.add(new Task(name, 0)); // 0 for false
       controller.text = ""; // reset TextEdit text
     });
     addTaskToDB(name, false);
@@ -49,23 +57,44 @@ abstract class EditTasksState extends State<EditTasks> {
 
   /// saves a task to the database
   void addTaskToDB(String name, bool isCompleted) async {
-    await db.insert(new Task(name, isCompleted ? 1 : 0));
+    // await db.insert(new Task(name, isCompleted ? 1 : 0));
+    getTasksCollection().then((val) {
+      val.add({'name': name, 'isCompleted': isCompleted});
+    });
   }
 
   /// called if an item is swiped left or right
   /// remove task from task list and from database
   /// show snackbar giving acknowledgement that the task has been deleted
-  void removeTask(BuildContext context, int index) async {
-    String taskName = tasks[index].name;
-    setState(() {
-      tasks.removeAt(index);
+  void removeTask(BuildContext context, String docId) async {
+    getTasksCollection().then((val) {
+      val.document(docId).delete();
     });
-    await db.deleteTask(taskName);
-
     Scaffold.of(context).showSnackBar(
           SnackBar(
-            content: Text("Deleted $taskName"),
+            content: Text("Deleted task successfully"),
           ),
         );
+  }
+
+  Future<FirebaseUser> getUser() async {
+    return await _auth.currentUser();
+  }
+
+  Future<String> getUserUID() async {
+    var user = await _auth.currentUser();
+    return user.uid;
+  }
+
+  Future<CollectionReference> getTasksCollection() async {
+    var useruid = await getUserUID();
+    return db.collection('users').document(useruid).collection('tasks');
+  }
+
+  void setUserUID() async {
+    var _userUID = await getUserUID();
+    setState(() {
+      userUID = _userUID;
+    });
   }
 }

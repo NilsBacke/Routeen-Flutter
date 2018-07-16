@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'home_state.dart';
 
@@ -66,7 +67,7 @@ class HomeView extends HomeState {
                   ),
                 ),
               ),
-              _taskList(),
+              _tasksList(),
             ],
           ),
         ),
@@ -74,36 +75,55 @@ class HomeView extends HomeState {
     );
   }
 
-  Widget _taskList() {
+  Widget _tasksList() {
+    if (userUID == '') {
+      return Center(child: Text("Loading..."));
+    }
     return new Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: new Container(
-        child: new ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: tasks.length,
-          itemBuilder: (BuildContext context, int index) {
-            print("list is completed: ${tasks[index].isCompleted}");
-            return new Column(
-              children: <Widget>[
-                new CheckboxListTile(
-                  activeColor: const Color(0xFF1dcaff),
-                  value: tasks[index].isCompleted == 0 ? false : true,
-                  // value: true,
-                  onChanged: (val) {
-                    alterTask(val, index);
-                  },
-                  title: new Text(
-                    tasks[index].name,
-                    // "name",
-                  ),
-                ),
-                new Divider(),
-              ],
+        child: StreamBuilder(
+          stream: db
+              .collection('users')
+              .document(userUID)
+              .collection('tasks')
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: Text("Loading..."));
+            }
+            return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _buildListItem(
+                    index, context, snapshot.data.documents[index]);
+              },
             );
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildListItem(
+      int index, BuildContext context, DocumentSnapshot document) {
+    return new Column(
+      children: <Widget>[
+        new CheckboxListTile(
+          activeColor: const Color(0xFF1dcaff),
+          value: document['isCompleted'],
+          // value: true,
+          onChanged: (val) {
+            alterTask(val, document);
+          },
+          title: new Text(
+            document['name'],
+          ),
+        ),
+        new Divider(),
+      ],
     );
   }
 }

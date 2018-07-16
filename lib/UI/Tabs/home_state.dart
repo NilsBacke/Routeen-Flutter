@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'edit_tasks_state.dart';
-import 'package:routeen/data/database_helper.dart';
 import 'package:routeen/data/task.dart';
 import 'home_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final String keepItUp = "Keep It Up!";
 final String startAnother = "Start up a streak!";
+final Firestore db = Firestore.instance;
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class Home extends StatefulWidget {
   @override
@@ -18,18 +21,14 @@ abstract class HomeState extends State<Home> {
   int streak = 0; // current day streak
   int dayLastCompleted;
   String motivationText; // text that changes depending on streak
-  List<Task> tasks = <Task>[];
-
-  Future<SharedPreferences> _prefs =
-      SharedPreferences.getInstance(); // to store streak
-  var db = new DatabaseHelper();
+  String userUID = '';
 
   @override
   initState() {
     super.initState();
+    setUserUID();
     dayLastCompleted = getToday() - 1;
     getStreak();
-    getTasks();
 
     if (streak == 0) {
       motivationText = startAnother;
@@ -38,50 +37,19 @@ abstract class HomeState extends State<Home> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    saveTasks();
-  }
-
-  /// Retrieves the saved tasks in the database
-  /// and adds them to the list of tasks
-  void getTasks() async {
-    var fetched = await db.getAllTasks();
-    bool needToResetChecks = getToday() != dayLastCompleted;
-    for (int i = 0; i < fetched.length; i++) {
-      setState(() {
-        tasks.add(Task.fromMap(fetched[i]));
-      });
-      if (needToResetChecks) {
-        alterTask(false, i);
-      }
-    }
-  }
-
   /// Change a task's isCompleted value
   /// and update the task in the database
-  void alterTask(bool checkboxVal, int index) async {
-    int isNowCompleted = checkboxVal ? 1 : 0;
-    setState(() {
-      tasks[index].isCompleted = isNowCompleted;
-    });
+  void alterTask(bool checkboxVal, DocumentSnapshot docSnap) async {
+    docSnap.reference.updateData({'isCompleted': checkboxVal});
 
-    await db.updateTask(new Task(tasks[index].name, isNowCompleted));
-
-    updateStreak(); // check if streak should be incremented
-  }
-
-  void saveTasks() async {
-    tasks.forEach((task) async {
-      await db.updateTask(new Task(task.name, task.isCompleted));
-    });
+    await updateStreak(); // check if streak should be incremented
   }
 
   /// update streak if applicable
-  void updateStreak() {
+  Future updateStreak() async {
     // increment streak
-    if (allCompleted() && getToday() - dayLastCompleted == 1) {
+    bool allComplete = await allCompleted();
+    if (allComplete && getToday() - dayLastCompleted == 1) {
       incrementStreak();
       saveStreak();
       dayLastCompleted = getToday();
@@ -90,9 +58,11 @@ abstract class HomeState extends State<Home> {
   }
 
   /// check if all of the tasks in the list are completed
-  bool allCompleted() {
-    for (Task task in tasks) {
-      if (task.isCompleted == 0) {
+  Future<bool> allCompleted() async {
+    var doc = await getUserDoc();
+    var docs = await doc.collection('tasks').getDocuments();
+    for (DocumentSnapshot task in docs.documents) {
+      if (!task.data['isCompleted']) {
         return false;
       }
     }
@@ -107,32 +77,36 @@ abstract class HomeState extends State<Home> {
     });
   }
 
-  /// save the streak number using shared preferences
-  void saveStreak() async {
-    final SharedPreferences prefs = await _prefs;
-    prefs.setInt('streak', streak);
-    prefs.setInt('dayLastCompleted', dayLastCompleted);
+  /// save the streak number using firestore
+  Future saveStreak() async {
+    getUserDoc().then((val) {
+      val.updateData({'streak': streak, 'dayLastCompleted': dayLastCompleted});
+    });
   }
 
-  /// retrieve the streak number from shared preferences
+  /// retrieve the streak number from firestore
   void getStreak() async {
-    final SharedPreferences prefs = await _prefs;
-    setState(() {
-      streak = (prefs.getInt('streak') ?? 0);
-      dayLastCompleted = (prefs.getInt('dayLastCompleted') ?? getToday() - 1);
+    getUserDoc().then((val) {
+      val.get().then((val) async {
+        if (val.data['streak'] == null) {
+          // check if nothing saved so far
+          await saveStreak();
+        }
+        setState(() {
+          streak = val.data['streak'];
+          dayLastCompleted = val.data['dayLastCompleted'];
+        });
+      });
     });
+
     checkForLossOfStreak();
   }
 
   /// go to the compose page and update the tasks list upon pop back to the home page
   void composePage(BuildContext context) async {
-    final newTasks = await Navigator
+    Navigator
         .of(context)
         .push(MaterialPageRoute(builder: (context) => EditTasks()));
-
-    setState(() {
-      tasks = newTasks;
-    });
   }
 
   /// returns an int that represents the day of the month
@@ -225,5 +199,22 @@ abstract class HomeState extends State<Home> {
       motivationText = startAnother;
     });
     dayLastCompleted = getToday();
+  }
+
+  Future<String> getUserUID() async {
+    var user = await _auth.currentUser();
+    return user.uid;
+  }
+
+  Future<DocumentReference> getUserDoc() async {
+    var useruid = await getUserUID();
+    return db.collection('users').document(useruid);
+  }
+
+  void setUserUID() async {
+    var _userUID = await getUserUID();
+    setState(() {
+      userUID = _userUID;
+    });
   }
 }
