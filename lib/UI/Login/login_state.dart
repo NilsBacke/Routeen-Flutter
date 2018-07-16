@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:routeen/UI/Login/signup_state.dart';
@@ -7,6 +8,7 @@ import 'login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final Firestore _db = Firestore.instance;
 final GoogleSignIn _googleSignin = new GoogleSignIn();
 
 class Login extends StatefulWidget {
@@ -63,6 +65,7 @@ abstract class LoginState extends State<Login> {
       idToken: googleAuth.idToken,
     );
     print("signed in " + user.displayName);
+    addUserToDB(user, user.displayName);
     homePage();
   }
 
@@ -128,5 +131,22 @@ abstract class LoginState extends State<Login> {
         );
       },
     );
+  }
+
+  Future addUserToDB(FirebaseUser user, String name) async {
+    Map<String, Object> userMap = new Map();
+    userMap["name"] = name;
+    userMap["streak"] = 0;
+    userMap["email"] = user.email;
+    userMap["dayLastCompleted"] = getToday() - 1;
+    _db.collection('users').document(user.uid).setData(userMap).then((val) {
+      print("user added");
+    });
+  }
+
+  /// returns an int that represents the day of the month
+  int getToday() {
+    DateTime today = DateTime.now();
+    return today.day; // an integer
   }
 }

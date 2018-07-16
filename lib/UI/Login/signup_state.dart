@@ -50,7 +50,9 @@ abstract class SignUpState extends State<SignUp> {
   Future addUserToDB(FirebaseUser user, String name) async {
     Map<String, Object> userMap = new Map();
     userMap["name"] = name;
+    userMap["streak"] = 0;
     userMap["email"] = user.email;
+    userMap["dayLastCompleted"] = getToday() - 1;
     _db.collection('users').document(user.uid).setData(userMap).then((val) {
       print("user added");
     });
@@ -103,5 +105,11 @@ abstract class SignUpState extends State<SignUp> {
         );
       },
     );
+  }
+
+  /// returns an int that represents the day of the month
+  int getToday() {
+    DateTime today = DateTime.now();
+    return today.day; // an integer
   }
 }

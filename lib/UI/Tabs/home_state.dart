@@ -87,14 +87,15 @@ abstract class HomeState extends State<Home> {
   /// retrieve the streak number from firestore
   void getStreak() async {
     getUserDoc().then((val) {
-      val.get().then((val) async {
-        if (val.data['streak'] == null) {
+      val.get().then((val1) async {
+        print("data: ${val1.data['streak']}");
+        if (val1.data['streak'] == null) {
           // check if nothing saved so far
           await saveStreak();
         }
         setState(() {
-          streak = val.data['streak'];
-          dayLastCompleted = val.data['dayLastCompleted'];
+          streak = val1.data['streak'];
+          dayLastCompleted = val1.data['dayLastCompleted'];
         });
       });
     });
