@@ -16,6 +16,7 @@ dependencies:
   firebase_auth: any
   google_sign_in: "^3.0.4"
   cloud_firestore: "^0.7.3"
+  material_search: "^0.2.7"
 
 flutter_icons:
   image_path: "images/appicon.png"

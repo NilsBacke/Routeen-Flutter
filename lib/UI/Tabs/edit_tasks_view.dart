@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'edit_tasks_state.dart';
 
@@ -9,11 +6,6 @@ class EditTasksView extends EditTasksState {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Routeen"),
-        centerTitle: true,
-        backgroundColor: const Color(0xFF1dcaff),
-      ),
       body: new Container(
         child: new Column(
           crossAxisAlignment: CrossAxisAlignment.center,

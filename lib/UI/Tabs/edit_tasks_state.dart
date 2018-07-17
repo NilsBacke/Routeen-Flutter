@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:routeen/data/database_helper.dart';
-import 'package:routeen/data/task.dart';
 import 'edit_tasks_view.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -19,8 +17,6 @@ abstract class EditTasksState extends State<EditTasks> {
   TextEditingController controller =
       new TextEditingController(); // for the add task EditText
   String userUID = '';
-  // List<Task> tasks = new List();
-  // var db = new DatabaseHelper();
 
   @override
   initState() {
@@ -28,17 +24,6 @@ abstract class EditTasksState extends State<EditTasks> {
     setUserUID();
     // getTasks();
   }
-
-  /// Retrieves the saved tasks in the database
-  /// and adds them to the list of tasks
-  // getTasks() async {
-  //   var fetched = await db.getAllTasks();
-  //   for (int i = 0; i < fetched.length; i++) {
-  //     setState(() {
-  //       tasks.add(Task.fromMap(fetched[i]));
-  //     });
-  //   }
-  // }
 
   /// On press of the add task button
   /// Creates a new task given the name from the add task EditText and

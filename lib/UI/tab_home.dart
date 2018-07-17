@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:routeen/UI/Login/login_state.dart';
+import 'package:routeen/UI/Tabs/friends_state.dart';
 import 'Tabs/home_state.dart';
 import 'Tabs/edit_tasks_state.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class TabBarHome extends StatefulWidget {
   @override
@@ -10,11 +15,29 @@ class TabBarHome extends StatefulWidget {
 class _TabBarHomeState extends State<TabBarHome> {
   int _navIndex = 0;
 
-  List<Widget> screens = [Home(), EditTasks(), Home(), EditTasks()];
+  List<Widget> screens = [Home(), EditTasks(), Friends(), EditTasks()];
+
+  logOut() {
+    _auth.signOut();
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      Login();
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Routeen"),
+        centerTitle: true,
+        backgroundColor: Colors.lightBlueAccent,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: logOut,
+          ),
+        ],
+      ),
       body: screens[_navIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -39,7 +62,7 @@ class _TabBarHomeState extends State<TabBarHome> {
               Icons.edit,
             ),
             title: Text(
-              "Edit Tasks",
+              "Tasks",
             ),
           ),
           BottomNavigationBarItem(

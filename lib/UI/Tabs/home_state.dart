@@ -93,10 +93,8 @@ abstract class HomeState extends State<Home> {
           // check if nothing saved so far
           await saveStreak();
         }
-        setState(() {
-          streak = val1.data['streak'];
-          dayLastCompleted = val1.data['dayLastCompleted'];
-        });
+        streak = val1.data['streak'];
+        dayLastCompleted = val1.data['dayLastCompleted'];
       });
     });
 

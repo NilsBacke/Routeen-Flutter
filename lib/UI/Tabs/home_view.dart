@@ -6,20 +6,6 @@ class HomeView extends HomeState {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        backgroundColor: const Color(0xFF1dcaff),
-        title: new Text("Routeen"),
-        centerTitle: true,
-        actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.edit),
-            tooltip: "Edit tasks",
-            onPressed: () {
-              composePage(context);
-            },
-          )
-        ],
-      ),
       body: new SingleChildScrollView(
         child: new Center(
           child: new Column(
