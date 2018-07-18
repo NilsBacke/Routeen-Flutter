@@ -14,10 +14,15 @@ class MyMaterialSearchResult<T> extends MaterialSearchResult<T> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(text),
-        subtitle: Text(subtext),
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            leading: Icon(icon),
+            title: Text(text),
+            subtitle: Text(subtext),
+          ),
+          Divider(),
+        ],
       ),
     );
   }

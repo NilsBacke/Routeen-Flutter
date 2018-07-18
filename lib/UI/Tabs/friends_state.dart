@@ -82,9 +82,13 @@ abstract class FriendsState extends State<Friends> {
   void fillUsersList() async {
     var docs = await db.collection('users').getDocuments();
     var list = docs.documents;
+    var currentUserUID = await getUserUID();
     for (DocumentSnapshot snap in list) {
       var map = snap.data;
-      usersList.add(User(map['name'], map['email'], map['userUID']));
+      if (currentUserUID != map['userUID']) {
+        // don't add the current user to users list
+        usersList.add(User(map['name'], map['email'], map['userUID']));
+      }
     }
   }
 }

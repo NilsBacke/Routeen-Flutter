@@ -86,7 +86,6 @@ abstract class HomeState extends State<Home> {
   void getStreak() async {
     getUserDoc().then((val) {
       val.get().then((val1) async {
-        print("data: ${val1.data['streak']}");
         if (val1.data['streak'] == null) {
           // check if nothing saved so far
           await saveStreak();
