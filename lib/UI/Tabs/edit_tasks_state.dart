@@ -42,7 +42,6 @@ abstract class EditTasksState extends State<EditTasks> {
 
   /// saves a task to the database
   void addTaskToDB(String name, bool isCompleted) async {
-    // await db.insert(new Task(name, isCompleted ? 1 : 0));
     getTasksCollection().then((val) {
       val.add({'name': name, 'isCompleted': isCompleted});
     });

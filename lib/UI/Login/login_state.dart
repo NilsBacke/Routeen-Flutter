@@ -139,6 +139,7 @@ abstract class LoginState extends State<Login> {
     userMap["streak"] = 0;
     userMap["email"] = user.email;
     userMap["dayLastCompleted"] = getToday() - 1;
+    userMap['userUID'] = user.uid;
     _db.collection('users').document(user.uid).setData(userMap).then((val) {
       print("user added");
     });
