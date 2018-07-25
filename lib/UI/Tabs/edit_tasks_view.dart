@@ -6,6 +6,7 @@ class EditTasksView extends EditTasksState {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: new Container(
         child: new Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,6 +67,7 @@ class EditTasksView extends EditTasksState {
             return Center(child: Text("Loading..."));
           }
           return ListView.builder(
+            physics: AlwaysScrollableScrollPhysics(),
             itemCount: snapshot.data.documents.length,
             itemBuilder: (BuildContext context, int index) {
               return _buildListItem(

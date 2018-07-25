@@ -23,15 +23,13 @@ abstract class FriendsState extends State<Friends> {
     fillUsersList(); // sets the userUID
   }
 
-  @override
-  dispose() {
-    super.dispose();
-  }
-
   /// show a dialog that prompts the user to confirm adding the selection as a friend
   void showFriendDialog(String uid) async {
-    String name = await getNameFromUID(uid);
-    int currStreak = await getStreakFromUID(uid);
+    Map map = await getInfoFromUID(uid);
+    String name = map['name'];
+    String email = map['email'];
+    int dayLastCompleted = map['dayLastCompleted'];
+    int streak = map['streak'];
     if (name == null) return;
     showDialog(
         context: context,
@@ -43,12 +41,12 @@ abstract class FriendsState extends State<Friends> {
               FlatButton(
                 child: Text("Yes"),
                 onPressed: () {
-                  addFriend(name, uid, currStreak);
+                  addFriend(name, uid, email, streak, dayLastCompleted);
                   Navigator.of(context).pop();
                 },
               ),
               FlatButton(
-                child: Text("No"),
+                child: Text("Cancel"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -58,9 +56,53 @@ abstract class FriendsState extends State<Friends> {
         });
   }
 
-  void addFriend(String name, String uid, int streak) async {
+  void showRemoveDialog(String name, String uid) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text("Remove friend"),
+            content: Text(
+                "Are you sure you want to remove $name from your friends list?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Yes"),
+                onPressed: () {
+                  removeFriend(uid);
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void addFriend(String name, String uid, String email, int streak,
+      int dayLastCompleted) async {
     getFriendsCollection().then((val) {
-      val.add({'name': name, 'userUID': uid, 'streak': streak});
+      val.add({
+        'name': name,
+        'userUID': uid,
+        'email': email,
+        'streak': streak,
+        'dayLastCompleted': dayLastCompleted
+      });
+    });
+  }
+
+  void removeFriend(String uid) async {
+    getFriendsCollection().then((val) async {
+      var docs = await val.where('userUID', isEqualTo: uid).getDocuments();
+      var list = docs.documents;
+      for (DocumentSnapshot snap in list) {
+        snap.reference.delete();
+      }
     });
   }
 
@@ -74,26 +116,14 @@ abstract class FriendsState extends State<Friends> {
     return db.collection('users').document(useruid).collection('friends');
   }
 
-  Future<String> getNameFromUID(String uid) async {
+  Future<Map<String, dynamic>> getInfoFromUID(String uid) async {
     var docs = await db
         .collection("users")
         .where('userUID', isEqualTo: uid)
         .getDocuments();
     var list = docs.documents;
     for (DocumentSnapshot snap in list) {
-      return snap.data['name'];
-    }
-    return null;
-  }
-
-  Future<int> getStreakFromUID(String uid) async {
-    var docs = await db
-        .collection("users")
-        .where('userUID', isEqualTo: uid)
-        .getDocuments();
-    var list = docs.documents;
-    for (DocumentSnapshot snap in list) {
-      return snap.data['streak'];
+      return snap.data;
     }
     return null;
   }
@@ -102,14 +132,36 @@ abstract class FriendsState extends State<Friends> {
     var docs = await db.collection('users').getDocuments();
     var list = docs.documents;
     await setUserUID();
+    List<User> friends = await getFriendsList();
     for (DocumentSnapshot snap in list) {
       var map = snap.data;
-      if (userUID != map['userUID']) {
-        // don't add the current user to users list
-        usersList.add(
-            User(map['name'], map['email'], map['userUID'], map['streak']));
+      if (userUID != map['userUID'] && !inFriendsList(friends, map)) {
+        // don't add the current user to users list, or a friend of the current user
+        usersList.add(User(
+            name: map['name'],
+            email: map['email'],
+            userUID: map['userUID'],
+            currStreak: map['streak'],
+            dayLastCompleted: map['dayLastCompleted']));
       }
     }
+  }
+
+  getFriendsList() async {
+    List<User> friends = List();
+    var ref = await getFriendsCollection();
+    var snap = await ref.getDocuments();
+    var docs = snap.documents;
+    for (DocumentSnapshot doc in docs) {
+      var data = doc.data;
+      friends.add(User(
+          name: data['name'],
+          userUID: data['userUID'],
+          email: data['email'],
+          currStreak: data['streak'],
+          dayLastCompleted: data['dayLastCompleted']));
+    }
+    return friends;
   }
 
   Future setUserUID() async {
@@ -120,10 +172,25 @@ abstract class FriendsState extends State<Friends> {
       });
     }
   }
+
+  bool inFriendsList(List<User> friends, Map<String, dynamic> map) {
+    var uid = map['userUID'];
+    for (int i = 0; i < friends.length; i++) {
+      if (friends[i].userUID == uid) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 class User {
-  User(this.name, this.email, this.userUID, this.currStreak);
+  User(
+      {this.name,
+      this.email,
+      this.userUID,
+      this.currStreak,
+      this.dayLastCompleted});
   String name, email, userUID;
-  int currStreak;
+  int currStreak, dayLastCompleted;
 }

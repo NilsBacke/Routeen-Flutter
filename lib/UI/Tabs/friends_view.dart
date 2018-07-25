@@ -26,14 +26,15 @@ class FriendsView extends FriendsState {
         placeholder: "Find people...",
         results: usersList
             .map((user) => new MyMaterialSearchResult<String>(
-                  text: user.userUID,
-                  value: user.name,
+                  text: user.name,
+                  value: user.userUID,
                   icon: Icons.person,
                   subtext: user.email,
                 ))
             .toList(),
-        onSelect: (name) {
-          showFriendDialog(name);
+        onSelect: (uid) {
+          print(uid);
+          showFriendDialog(uid);
         },
       ),
     );
@@ -74,7 +75,16 @@ class FriendsView extends FriendsState {
       child: ListTile(
         leading: Icon(Icons.person),
         title: Text(document.data['name']),
-        subtitle: Text("Current streak: ${document.data['streak']}"),
+        trailing: Text(
+          "Current streak: ${document.data['streak']}",
+          style: TextStyle(fontSize: 18.0),
+        ),
+        onTap: () {
+          print('tapped');
+        },
+        onLongPress: () {
+          showRemoveDialog(document.data['name'], document.data['userUID']);
+        },
       ),
     );
   }
