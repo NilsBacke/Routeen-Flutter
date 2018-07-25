@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Login/login_state.dart';
 import 'package:routeen/UI/Tabs/friends_state.dart';
+import 'package:routeen/UI/Tabs/profile_state.dart';
 import 'Tabs/home_state.dart';
 import 'Tabs/edit_tasks_state.dart';
 
@@ -15,7 +16,7 @@ class TabBarHome extends StatefulWidget {
 class _TabBarHomeState extends State<TabBarHome> {
   int _navIndex = 0;
 
-  List<Widget> screens = [Home(), EditTasks(), Friends(), EditTasks()];
+  List<Widget> screens = [Home(), EditTasks(), Friends(), Profile()];
 
   logOut() {
     _auth.signOut();
