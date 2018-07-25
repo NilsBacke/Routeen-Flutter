@@ -18,7 +18,7 @@ class MyMaterialSearchResult<T> extends MaterialSearchResult<T> {
         children: <Widget>[
           ListTile(
             leading: Icon(icon),
-            title: Text(text),
+            title: Text(value.toString()),
             subtitle: Text(subtext),
           ),
           Divider(),

@@ -15,16 +15,23 @@ class Friends extends StatefulWidget {
 
 abstract class FriendsState extends State<Friends> {
   List<User> usersList = List();
+  String userUID = '';
 
   @override
   initState() {
     super.initState();
-    fillUsersList();
+    fillUsersList(); // sets the userUID
+  }
+
+  @override
+  dispose() {
+    super.dispose();
   }
 
   /// show a dialog that prompts the user to confirm adding the selection as a friend
   void showFriendDialog(String uid) async {
     String name = await getNameFromUID(uid);
+    int currStreak = await getStreakFromUID(uid);
     if (name == null) return;
     showDialog(
         context: context,
@@ -36,7 +43,7 @@ abstract class FriendsState extends State<Friends> {
               FlatButton(
                 child: Text("Yes"),
                 onPressed: () {
-                  addFriend(name, uid);
+                  addFriend(name, uid, currStreak);
                   Navigator.of(context).pop();
                 },
               ),
@@ -51,9 +58,9 @@ abstract class FriendsState extends State<Friends> {
         });
   }
 
-  void addFriend(String name, String uid) async {
+  void addFriend(String name, String uid, int streak) async {
     getFriendsCollection().then((val) {
-      val.add({'name': name, 'userUID': uid});
+      val.add({'name': name, 'userUID': uid, 'streak': streak});
     });
   }
 
@@ -79,21 +86,44 @@ abstract class FriendsState extends State<Friends> {
     return null;
   }
 
+  Future<int> getStreakFromUID(String uid) async {
+    var docs = await db
+        .collection("users")
+        .where('userUID', isEqualTo: uid)
+        .getDocuments();
+    var list = docs.documents;
+    for (DocumentSnapshot snap in list) {
+      return snap.data['streak'];
+    }
+    return null;
+  }
+
   void fillUsersList() async {
     var docs = await db.collection('users').getDocuments();
     var list = docs.documents;
-    var currentUserUID = await getUserUID();
+    await setUserUID();
     for (DocumentSnapshot snap in list) {
       var map = snap.data;
-      if (currentUserUID != map['userUID']) {
+      if (userUID != map['userUID']) {
         // don't add the current user to users list
-        usersList.add(User(map['name'], map['email'], map['userUID']));
+        usersList.add(
+            User(map['name'], map['email'], map['userUID'], map['streak']));
       }
+    }
+  }
+
+  Future setUserUID() async {
+    var _userUID = await getUserUID();
+    if (this.mounted) {
+      setState(() {
+        userUID = _userUID;
+      });
     }
   }
 }
 
 class User {
-  User(this.name, this.email, this.userUID);
+  User(this.name, this.email, this.userUID, this.currStreak);
   String name, email, userUID;
+  int currStreak;
 }

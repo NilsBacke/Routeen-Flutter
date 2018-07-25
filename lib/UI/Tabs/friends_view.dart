@@ -23,29 +23,40 @@ class FriendsView extends FriendsState {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: MaterialSearchInput<String>(
-        placeholder: "Search people...",
+        placeholder: "Find people...",
         results: usersList
             .map((user) => new MyMaterialSearchResult<String>(
-                  value: user.userUID,
-                  text: user.name,
+                  text: user.userUID,
+                  value: user.name,
                   icon: Icons.person,
                   subtext: user.email,
                 ))
             .toList(),
-        onSelect: showFriendDialog,
+        onSelect: (name) {
+          showFriendDialog(name);
+        },
       ),
     );
   }
 
   Widget buildFriendsList() {
+    if (userUID == '') {
+      return Expanded(child: Center(child: Text("Loading...")));
+    }
     return Expanded(
       child: StreamBuilder(
-        stream: db.collection('users').snapshots(), // fix to user's friends
-        builder: (_, AsyncSnapshot<dynamic> snapshot) {
+        stream: db
+            .collection('users')
+            .document(userUID)
+            .collection('friends')
+            .snapshots(),
+        builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: Text("Loading..."));
           }
+          print(snapshot.data.documents.length);
           return ListView.builder(
+            physics: AlwaysScrollableScrollPhysics(),
             itemCount: snapshot.data.documents.length,
             itemBuilder: (BuildContext context, int index) {
               return _buildListItem(
@@ -59,10 +70,12 @@ class FriendsView extends FriendsState {
 
   Widget _buildListItem(
       int index, BuildContext context, DocumentSnapshot document) {
-    return Column(
-      children: <Widget>[
-        ListTile(),
-      ],
+    return Container(
+      child: ListTile(
+        leading: Icon(Icons.person),
+        title: Text(document.data['name']),
+        subtitle: Text("Current streak: ${document.data['streak']}"),
+      ),
     );
   }
 }
