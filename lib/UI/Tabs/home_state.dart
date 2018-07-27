@@ -47,7 +47,9 @@ abstract class HomeState extends State<Home> {
   Future updateStreak() async {
     // increment streak
     bool allComplete = await allCompleted();
-    if (allComplete && getToday() - dayLastCompleted == 1) {
+    if (allComplete &&
+        (getToday() - dayLastCompleted == 1 ||
+            streak == 0 && dayLastCompleted != getToday())) {
       incrementStreak();
       saveStreak();
       dayLastCompleted = getToday();

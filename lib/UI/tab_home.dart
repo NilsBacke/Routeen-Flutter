@@ -29,7 +29,7 @@ class _TabBarHomeState extends State<TabBarHome> {
                   0.9,
                 ],
                 colors: [
-                  Colors.lightBlueAccent,
+                  Colors.lightBlueAccent[400],
                   Colors.grey[50],
                 ],
               ),
