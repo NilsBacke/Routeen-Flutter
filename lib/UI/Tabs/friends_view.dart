@@ -2,13 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Tabs/friends_state.dart';
 import 'package:material_search/material_search.dart';
+import 'package:routeen/data/data.dart';
 import 'package:routeen/data/my_material_search_result.dart';
 
 class FriendsView extends FriendsState {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return Padding(
+      padding: EdgeInsets.only(top: getTopPadding(context)),
+      child: Container(
         child: Column(
           children: <Widget>[
             buildSearchBar(),

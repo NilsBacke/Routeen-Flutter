@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:routeen/data/data.dart';
 import 'home_state.dart';
 
 class HomeView extends HomeState {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new SingleChildScrollView(
+    return Padding(
+      padding: EdgeInsets.only(top: getTopPadding(context)),
+      child: new SingleChildScrollView(
         child: new Center(
           child: new Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -16,7 +18,7 @@ class HomeView extends HomeState {
                 streak.toString(),
                 style: new TextStyle(
                   fontSize: 150.0,
-                  color: const Color(0xFF1dcaff),
+                  color: Colors.white70,
                   fontWeight: FontWeight.w100,
                 ),
               ),
@@ -25,6 +27,7 @@ class HomeView extends HomeState {
                 style: new TextStyle(
                   fontSize: 40.0,
                   fontWeight: FontWeight.w200,
+                  color: Colors.white,
                 ),
               ),
               new Padding(
@@ -35,6 +38,7 @@ class HomeView extends HomeState {
                 style: new TextStyle(
                   fontSize: 35.0,
                   fontWeight: FontWeight.w200,
+                  color: Colors.white,
                 ),
               ),
               new Padding(

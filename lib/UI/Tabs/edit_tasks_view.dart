@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:routeen/data/data.dart';
 import 'edit_tasks_state.dart';
 
 class EditTasksView extends EditTasksState {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      resizeToAvoidBottomPadding: false,
-      body: new Container(
+    return Padding(
+      padding: EdgeInsets.only(top: getTopPadding(context)),
+      child: Container(
         child: new Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[

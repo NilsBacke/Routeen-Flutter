@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Tabs/profile_state.dart';
+import 'package:routeen/data/data.dart';
 
 class ProfileView extends ProfileState {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return Padding(
+      padding: EdgeInsets.only(top: getTopPadding(context)),
+      child: Container(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
