@@ -41,7 +41,7 @@ abstract class FriendsState extends State<Friends> {
               FlatButton(
                 child: Text("Yes"),
                 onPressed: () {
-                  addFriend(name, uid, email, streak, dayLastCompleted);
+                  follow(name, uid, email, streak, dayLastCompleted);
                   Navigator.of(context).pop();
                 },
               ),
@@ -68,7 +68,7 @@ abstract class FriendsState extends State<Friends> {
               FlatButton(
                 child: Text("Yes"),
                 onPressed: () {
-                  removeFriend(uid);
+                  removeFollowing(uid);
                   Navigator.of(context).pop();
                 },
               ),
@@ -83,10 +83,17 @@ abstract class FriendsState extends State<Friends> {
         });
   }
 
-  void addFriend(String name, String uid, String email, int streak,
+  void follow(String name, String uid, String email, int streak,
       int dayLastCompleted) async {
-    getFriendsCollection().then((val) {
-      val.add({
+    String currUserUID;
+    if (userUID == '') {
+      currUserUID = await getUserUID();
+    } else {
+      currUserUID = userUID;
+    }
+    // update current user's "following"
+    getFollowingCollection().then((val) {
+      val.document(uid).setData({
         'name': name,
         'userUID': uid,
         'email': email,
@@ -94,10 +101,24 @@ abstract class FriendsState extends State<Friends> {
         'dayLastCompleted': dayLastCompleted
       });
     });
+
+    // update user2's "followers"
+    Map map = await getInfoFromUID(currUserUID);
+    String currname = map['name'];
+    String curremail = map['email'];
+    int currdayLastCompleted = map['dayLastCompleted'];
+    int currstreak = map['streak'];
+    getFollowersCollection(uid).document(currUserUID).setData({
+      'name': currname,
+      'userUID': currUserUID,
+      'email': curremail,
+      'streak': currstreak,
+      'dayLastCompleted': currdayLastCompleted
+    });
   }
 
-  void removeFriend(String uid) async {
-    getFriendsCollection().then((val) async {
+  void removeFollowing(String uid) async {
+    getFollowingCollection().then((val) async {
       var docs = await val.where('userUID', isEqualTo: uid).getDocuments();
       var list = docs.documents;
       for (DocumentSnapshot snap in list) {
@@ -111,9 +132,13 @@ abstract class FriendsState extends State<Friends> {
     return user.uid;
   }
 
-  Future<CollectionReference> getFriendsCollection() async {
+  Future<CollectionReference> getFollowingCollection() async {
     var useruid = await getUserUID();
-    return db.collection('users').document(useruid).collection('friends');
+    return db.collection('users').document(useruid).collection('following');
+  }
+
+  CollectionReference getFollowersCollection(String useruid) {
+    return db.collection('users').document(useruid).collection('followers');
   }
 
   Future<Map<String, dynamic>> getInfoFromUID(String uid) async {
@@ -149,7 +174,7 @@ abstract class FriendsState extends State<Friends> {
 
   getFriendsList() async {
     List<User> friends = List();
-    var ref = await getFriendsCollection();
+    var ref = await getFollowingCollection();
     var snap = await ref.getDocuments();
     var docs = snap.documents;
     for (DocumentSnapshot doc in docs) {

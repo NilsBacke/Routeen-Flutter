@@ -7,6 +7,7 @@ import 'home_view.dart';
 
 final String keepItUp = "Keep It Up!";
 final String startAnother = "Start up a streak!";
+
 final Firestore db = Firestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -18,7 +19,7 @@ class Home extends StatefulWidget {
 abstract class HomeState extends State<Home> {
   int streak = 0; // current day streak
   int dayLastCompleted;
-  String motivationText; // text that changes depending on streak
+  String motivationText = keepItUp; // text that changes depending on streak
   String userUID = '';
 
   @override
@@ -26,7 +27,11 @@ abstract class HomeState extends State<Home> {
     super.initState();
     setUserUID();
     dayLastCompleted = getToday() - 1;
-    getStreak();
+    loadStreak();
+  }
+
+  void loadStreak() async {
+    await getStreak();
 
     if (streak == 0) {
       motivationText = startAnother;
@@ -85,7 +90,7 @@ abstract class HomeState extends State<Home> {
   }
 
   /// retrieve the streak number from firestore
-  void getStreak() async {
+  Future getStreak() async {
     getUserDoc().then((val) {
       val.get().then((val1) async {
         if (val1.data['streak'] == null) {
