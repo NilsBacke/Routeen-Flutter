@@ -84,8 +84,35 @@ abstract class HomeState extends State<Home> {
 
   /// save the streak number using firestore
   Future saveStreak() async {
-    getUserDoc().then((val) {
-      val.updateData({'streak': streak, 'dayLastCompleted': dayLastCompleted});
+    var userDoc = await getUserDoc();
+    var usersCol = db.collection("users");
+    var docs = await usersCol.getDocuments();
+    var currUserUID = await getUserUID();
+    db.runTransaction((transaction) async {
+      for (var doc in docs.documents) {
+        // for every user who follows the current user, update that current user's streak
+        var followingQuery = doc.reference
+            .collection("following")
+            .where("userUID", isEqualTo: currUserUID);
+        var followingQueryDocs = await followingQuery.getDocuments();
+        for (var followingQueryDoc in followingQueryDocs.documents) {
+          transaction.update(followingQueryDoc.reference,
+              {'streak': streak, 'dayLastCompleted': dayLastCompleted});
+        }
+
+        // for every user who the current user is following, update that current user's streak
+        var followersQuery = doc.reference
+            .collection("followers")
+            .where("userUID", isEqualTo: currUserUID);
+        var followersQueryDocs = await followersQuery.getDocuments();
+        for (var followersQueryDoc in followersQueryDocs.documents) {
+          transaction.update(followersQueryDoc.reference,
+              {'streak': streak, 'dayLastCompleted': dayLastCompleted});
+        }
+      }
+      // write to user document
+      transaction.update(
+          userDoc, {'streak': streak, 'dayLastCompleted': dayLastCompleted});
     });
   }
 

@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:routeen/UI/Tabs/friends_state.dart';
+import 'package:routeen/UI/Tabs/following_state.dart';
 import 'package:material_search/material_search.dart';
 import 'package:routeen/data/data.dart';
 import 'package:routeen/data/my_material_search_result.dart';
 
-class FriendsView extends FriendsState {
+class FollowingView extends FollowingState {
   @override
   Widget build(BuildContext context) {
     return Padding(
