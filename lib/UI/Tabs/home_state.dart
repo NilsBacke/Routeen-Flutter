@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'edit_tasks_state.dart';
 import 'home_view.dart';
 
-final String keepItUp = "Keep It Up!";
-final String startAnother = "Start up a streak!";
+const keepItUp = "Keep It Up!";
+const startAnother = "Start up a streak!";
 
 final Firestore db = Firestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -91,15 +91,13 @@ abstract class HomeState extends State<Home> {
 
   /// retrieve the streak number from firestore
   Future getStreak() async {
-    getUserDoc().then((val) {
-      val.get().then((val1) async {
-        if (val1.data['streak'] == null) {
-          // check if nothing saved so far
-          await saveStreak();
-        }
-        streak = val1.data['streak'];
-        dayLastCompleted = val1.data['dayLastCompleted'];
-      });
+    getUserSnapshot().then((val) async {
+      if (val.data['streak'] == null) {
+        // check if nothing saved so far
+        await saveStreak();
+      }
+      streak = val.data['streak'];
+      dayLastCompleted = val.data['dayLastCompleted'];
     });
 
     checkForLossOfStreak();
@@ -205,6 +203,16 @@ abstract class HomeState extends State<Home> {
   }
 
   Future<String> getUserUID() async {
+    var useruid;
+    if (userUID == '') {
+      useruid = await getUserUIDFromAuth();
+    } else {
+      useruid = userUID;
+    }
+    return useruid;
+  }
+
+  Future<String> getUserUIDFromAuth() async {
     var user = await _auth.currentUser();
     return user.uid;
   }
@@ -212,6 +220,11 @@ abstract class HomeState extends State<Home> {
   Future<DocumentReference> getUserDoc() async {
     var useruid = await getUserUID();
     return db.collection('users').document(useruid);
+  }
+
+  Future<DocumentSnapshot> getUserSnapshot() async {
+    var doc = await getUserDoc();
+    return await doc.get();
   }
 
   void setUserUID() async {

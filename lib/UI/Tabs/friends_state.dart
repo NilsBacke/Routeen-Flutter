@@ -85,12 +85,8 @@ abstract class FriendsState extends State<Friends> {
 
   void follow(String name, String uid, String email, int streak,
       int dayLastCompleted) async {
-    String currUserUID;
-    if (userUID == '') {
-      currUserUID = await getUserUID();
-    } else {
-      currUserUID = userUID;
-    }
+    String currUserUID = await getUserUID();
+
     // update current user's "following"
     getFollowingCollection().then((val) {
       val.document(uid).setData({
@@ -118,6 +114,7 @@ abstract class FriendsState extends State<Friends> {
   }
 
   void removeFollowing(String uid) async {
+    // update current user's "following"
     getFollowingCollection().then((val) async {
       var docs = await val.where('userUID', isEqualTo: uid).getDocuments();
       var list = docs.documents;
@@ -125,9 +122,28 @@ abstract class FriendsState extends State<Friends> {
         snap.reference.delete();
       }
     });
+    // update user2's "followers"
+    String currUserUID = await getUserUID();
+    var docs = await getFollowersCollection(uid)
+        .where('userUID', isEqualTo: currUserUID)
+        .getDocuments();
+    var list = docs.documents;
+    for (DocumentSnapshot snap in list) {
+      snap.reference.delete();
+    }
   }
 
   Future<String> getUserUID() async {
+    String currUserUID;
+    if (userUID == '') {
+      currUserUID = await getUserUIDFromAuth();
+    } else {
+      currUserUID = userUID;
+    }
+    return currUserUID;
+  }
+
+  Future<String> getUserUIDFromAuth() async {
     var user = await _auth.currentUser();
     return user.uid;
   }
