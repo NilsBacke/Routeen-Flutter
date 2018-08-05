@@ -12,6 +12,11 @@ const streakPadding = 16.0;
 class ProfileView extends ProfileState {
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Padding(
       padding: EdgeInsets.only(top: getTopPadding(context)),
       child: SingleChildScrollView(
@@ -21,6 +26,13 @@ class ProfileView extends ProfileState {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: logOut,
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(profPicPadding),
                 child: Icon(
@@ -32,7 +44,7 @@ class ProfileView extends ProfileState {
               Padding(
                 padding: const EdgeInsets.all(namePadding),
                 child: Text(
-                  "Nils Backe",
+                  name,
                   style: TextStyle(
                     fontSize: 40.0,
                     fontWeight: FontWeight.w100,
@@ -43,7 +55,7 @@ class ProfileView extends ProfileState {
               Padding(
                 padding: const EdgeInsets.all(emailPadding),
                 child: Text(
-                  "nils.backe@gmail.com",
+                  email,
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.w200,
@@ -65,7 +77,7 @@ class ProfileView extends ProfileState {
               Padding(
                 padding: const EdgeInsets.all(streakPadding),
                 child: Text(
-                  "1",
+                  streak.toString(),
                   style: TextStyle(
                     color: Color(0xFF1dcaff),
                     fontSize: 120.0,

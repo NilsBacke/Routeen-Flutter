@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:routeen/UI/Tabs/friends_view.dart';
+import 'package:routeen/UI/Tabs/following_view.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore db = Firestore.instance;
 
-class Friends extends StatefulWidget {
+class Following extends StatefulWidget {
   @override
-  FriendsView createState() => FriendsView();
+  FollowingView createState() => FollowingView();
 }
 
-abstract class FriendsState extends State<Friends> {
+abstract class FollowingState extends State<Following> {
   List<User> usersList = List();
   String userUID = '';
 
@@ -63,7 +63,7 @@ abstract class FriendsState extends State<Friends> {
           return AlertDialog(
             title: Text("Remove friend"),
             content: Text(
-                "Are you sure you want to remove $name from your friends list?"),
+                "Are you sure you want to remove $name from your Following list?"),
             actions: <Widget>[
               FlatButton(
                 child: Text("Yes"),
@@ -173,10 +173,10 @@ abstract class FriendsState extends State<Friends> {
     var docs = await db.collection('users').getDocuments();
     var list = docs.documents;
     await setUserUID();
-    List<User> friends = await getFriendsList();
+    List<User> following = await getFollowingList();
     for (DocumentSnapshot snap in list) {
       var map = snap.data;
-      if (userUID != map['userUID'] && !inFriendsList(friends, map)) {
+      if (userUID != map['userUID'] && !inFollowingList(following, map)) {
         // don't add the current user to users list, or a friend of the current user
         usersList.add(User(
             name: map['name'],
@@ -188,21 +188,21 @@ abstract class FriendsState extends State<Friends> {
     }
   }
 
-  getFriendsList() async {
-    List<User> friends = List();
+  getFollowingList() async {
+    List<User> following = List();
     var ref = await getFollowingCollection();
     var snap = await ref.getDocuments();
     var docs = snap.documents;
     for (DocumentSnapshot doc in docs) {
       var data = doc.data;
-      friends.add(User(
+      following.add(User(
           name: data['name'],
           userUID: data['userUID'],
           email: data['email'],
           currStreak: data['streak'],
           dayLastCompleted: data['dayLastCompleted']));
     }
-    return friends;
+    return following;
   }
 
   Future setUserUID() async {
@@ -214,10 +214,10 @@ abstract class FriendsState extends State<Friends> {
     }
   }
 
-  bool inFriendsList(List<User> friends, Map<String, dynamic> map) {
+  bool inFollowingList(List<User> following, Map<String, dynamic> map) {
     var uid = map['userUID'];
-    for (int i = 0; i < friends.length; i++) {
-      if (friends[i].userUID == uid) {
+    for (int i = 0; i < following.length; i++) {
+      if (following[i].userUID == uid) {
         return true;
       }
     }

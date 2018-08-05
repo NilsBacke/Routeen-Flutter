@@ -14,7 +14,7 @@ class FollowingView extends FollowingState {
         child: Column(
           children: <Widget>[
             buildSearchBar(),
-            buildFriendsList(),
+            buildFollowingList(),
           ],
         ),
       ),
@@ -42,20 +42,20 @@ class FollowingView extends FollowingState {
     );
   }
 
-  Widget buildFriendsList() {
+  Widget buildFollowingList() {
     if (userUID == '') {
-      return Expanded(child: Center(child: Text("Loading...")));
+      return Expanded(child: Center(child: CircularProgressIndicator()));
     }
     return Expanded(
       child: StreamBuilder(
         stream: db
             .collection('users')
             .document(userUID)
-            .collection('friends')
+            .collection('following')
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: Text("Loading..."));
+            return Center(child: CircularProgressIndicator());
           }
           print(snapshot.data.documents.length);
           return ListView.builder(

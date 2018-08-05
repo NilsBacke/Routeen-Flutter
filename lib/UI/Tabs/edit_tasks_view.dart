@@ -54,7 +54,7 @@ class EditTasksView extends EditTasksState {
 
   Widget _tasksList() {
     if (userUID == '') {
-      return Expanded(child: Center(child: Text("Loading...")));
+      return Expanded(child: Center(child: CircularProgressIndicator()));
     }
     return new Expanded(
       child: StreamBuilder(
@@ -65,7 +65,7 @@ class EditTasksView extends EditTasksState {
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: Text("Loading..."));
+            return Center(child: CircularProgressIndicator());
           }
           return ListView.builder(
             physics: AlwaysScrollableScrollPhysics(),

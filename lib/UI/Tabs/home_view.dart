@@ -67,7 +67,7 @@ class HomeView extends HomeState {
 
   Widget _tasksList() {
     if (userUID == '') {
-      return Center(child: Text("Loading..."));
+      return Center(child: CircularProgressIndicator());
     }
     return new Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -80,7 +80,7 @@ class HomeView extends HomeState {
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Center(child: Text("Loading..."));
+              return Center(child: CircularProgressIndicator());
             }
             return ListView.builder(
               physics: NeverScrollableScrollPhysics(),

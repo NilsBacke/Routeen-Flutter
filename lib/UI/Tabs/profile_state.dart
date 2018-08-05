@@ -15,47 +15,36 @@ class Profile extends StatefulWidget {
 }
 
 abstract class ProfileState extends State<Profile> {
-  String name = '';
-  String email = '';
-  int following = 0;
-  int followers = 0;
-  int streak = 0;
+  String name;
+  String email;
+  int following;
+  int followers;
+  int streak;
+  bool isLoading = true;
 
   @override
   initState() {
     super.initState();
+    setUserInfo();
   }
 
   void logOut() {
     _auth.signOut();
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) {
       Login();
     }));
   }
 
-  void setUserName() async {
+  void setUserInfo() async {
     var snap = await getUserSnap();
-    name = snap.data['name'];
-  }
-
-  void setUserEmail() async {
-    var snap = await getUserSnap();
-    email = snap.data['email'];
-  }
-
-  void setUserFollowing() async {
-    var snap = await getUserSnap();
-    name = snap.data['name'];
-  }
-
-  void setUserFollowers() async {
-    var snap = await getUserSnap();
-    name = snap.data['name'];
-  }
-
-  void setUserStreak() async {
-    var snap = await getUserSnap();
-    streak = snap.data['streak'];
+    if (name == null) {
+      setState(() {
+        name = snap.data['name'];
+        email = snap.data['email'];
+        streak = snap.data['streak'];
+        isLoading = false;
+      });
+    }
   }
 
   Future<DocumentSnapshot> getUserSnap() async {
