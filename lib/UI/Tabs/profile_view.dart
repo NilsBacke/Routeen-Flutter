@@ -79,6 +79,7 @@ class ProfileView extends ProfileState {
                 child: Text(
                   streak.toString(),
                   style: TextStyle(
+                    fontFamily: 'Roboto',
                     color: Color(0xFF1dcaff),
                     fontSize: 120.0,
                     fontWeight: FontWeight.w100,
@@ -96,7 +97,8 @@ class ProfileView extends ProfileState {
     return Padding(
       padding: const EdgeInsets.all(followagePadding),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Column(
             mainAxisSize: MainAxisSize.min,
@@ -117,12 +119,6 @@ class ProfileView extends ProfileState {
                 ),
               ),
             ],
-          ),
-          RotatedBox(
-            quarterTurns: 1,
-            child: Divider(
-              height: 150.0,
-            ),
           ),
           Column(
             mainAxisSize: MainAxisSize.min,

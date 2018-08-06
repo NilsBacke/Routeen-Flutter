@@ -17,6 +17,7 @@ class HomeView extends HomeState {
               new Text(
                 streak.toString(),
                 style: new TextStyle(
+                  fontFamily: 'Roboto',
                   fontSize: 150.0,
                   color: Colors.white70,
                   fontWeight: FontWeight.w100,
