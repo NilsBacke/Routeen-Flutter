@@ -105,7 +105,7 @@ packages:
       name: firebase_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.12"
+    version: "0.5.14"
   firebase_core:
     dependency: "direct main"
     description:
@@ -297,7 +297,7 @@ packages:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.6"
+    version: "1.7.7"
   plugin:
     dependency: transitive
     description:
@@ -484,7 +484,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   yaml:
     dependency: transitive
     description:

@@ -14,21 +14,25 @@ class LoginView extends LoginState {
           },
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
-            child: Form(
-              key: formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  children: <Widget>[
-                    titleText(),
-                    emailFormField(),
-                    passwordFormField(),
-                    logInButton(),
-                    signInWithGoogleButton(),
-                    signUpButton(),
-                  ],
+            child: Stack(
+              children: <Widget>[
+                Form(
+                  key: formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      children: <Widget>[
+                        titleText(),
+                        emailFormField(),
+                        passwordFormField(),
+                        logInButton(),
+                        signInWithGoogleButton(),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                signUpButton(),
+              ],
             ),
           ),
         ),
@@ -36,10 +40,13 @@ class LoginView extends LoginState {
     );
   }
 
-  Padding titleText() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 120.0, bottom: 120.0),
-      child: Container(
+  Widget titleText() {
+    const multiplier = 0.324;
+    var titleHeight = MediaQuery.of(context).size.height * multiplier;
+
+    return Container(
+      height: titleHeight,
+      child: Center(
         child: Text(
           "Routeen",
           style: TextStyle(
@@ -137,9 +144,9 @@ class LoginView extends LoginState {
 
   Widget signUpButton() {
     return Container(
-      padding: const EdgeInsets.only(top: 100.0),
+      height: MediaQuery.of(context).size.height,
       child: Align(
-        alignment: Alignment(0.0, 1.0),
+        alignment: Alignment.bottomCenter,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
