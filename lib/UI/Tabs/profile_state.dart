@@ -43,9 +43,15 @@ abstract class ProfileState extends State<Profile> {
         email = snap.data['email'];
         streak = snap.data['streak'];
         isLoading = false;
+        following = snap.data['followingCount'];
+        followers = snap.data['followersCount'];
       });
     }
   }
+
+  void followingPage() {}
+
+  void followersPage() {}
 
   Future<DocumentSnapshot> getUserSnap() async {
     var useruid = await getUserUID();

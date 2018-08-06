@@ -97,6 +97,8 @@ abstract class FollowingState extends State<Following> {
         'dayLastCompleted': dayLastCompleted
       });
     });
+    // update current user's "followingCount"
+    await updateFollowingCount(1);
 
     // update user2's "followers"
     Map map = await getInfoFromUID(currUserUID);
@@ -111,17 +113,22 @@ abstract class FollowingState extends State<Following> {
       'streak': currstreak,
       'dayLastCompleted': currdayLastCompleted
     });
+    // update user2's "followersCount"
+    await updateFollowersCount(uid, 1);
   }
 
   void removeFollowing(String uid) async {
+    WriteBatch batch = db.batch();
+
     // update current user's "following"
     getFollowingCollection().then((val) async {
       var docs = await val.where('userUID', isEqualTo: uid).getDocuments();
       var list = docs.documents;
       for (DocumentSnapshot snap in list) {
-        snap.reference.delete();
+        batch.delete(snap.reference);
       }
     });
+
     // update user2's "followers"
     String currUserUID = await getUserUID();
     var docs = await getFollowersCollection(uid)
@@ -129,8 +136,39 @@ abstract class FollowingState extends State<Following> {
         .getDocuments();
     var list = docs.documents;
     for (DocumentSnapshot snap in list) {
-      snap.reference.delete();
+      batch.delete(snap.reference);
     }
+
+    // delete the documents then update the counts
+    batch.commit().then((val) async {
+      // update current user's "followingCount" (-1)
+      await updateFollowingCount(-1);
+      // update user2's "followersCount"
+      await updateFollowersCount(uid, -1);
+    });
+  }
+
+  Future updateFollowingCount(int amount) async {
+    final userDoc = await getUserDoc();
+    db.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(userDoc);
+      var newCount = snapshot.data['followingCount'] + amount;
+      transaction.update(userDoc, {"followingCount": newCount});
+    });
+  }
+
+  Future updateFollowersCount(String uid, int amount) async {
+    DocumentReference user2doc = db.collection('users').document(uid);
+    db.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(user2doc);
+      var newCount = snapshot.data['followersCount'] + 1;
+      transaction.update(user2doc, {"followersCount": newCount});
+    });
+  }
+
+  Future<DocumentReference> getUserDoc() async {
+    final useruid = await getUserUID();
+    return db.collection('users').document(useruid);
   }
 
   Future<String> getUserUID() async {

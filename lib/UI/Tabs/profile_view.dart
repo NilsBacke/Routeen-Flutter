@@ -5,9 +5,9 @@ import 'package:routeen/data/data.dart';
 const profPicPadding = 16.0;
 const namePadding = 12.0;
 const emailPadding = 12.0;
-const followagePadding = 16.0;
+const followagePadding = 12.0;
 const currStreakPadding = 8.0;
-const streakPadding = 16.0;
+const streakPadding = 4.0;
 
 class ProfileView extends ProfileState {
   @override
@@ -26,21 +26,6 @@ class ProfileView extends ProfileState {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  icon: Icon(Icons.exit_to_app),
-                  onPressed: logOut,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(profPicPadding),
-                child: Icon(
-                  Icons.person_outline,
-                  color: Colors.white70,
-                  size: 100.0,
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.all(namePadding),
                 child: Text(
@@ -86,6 +71,13 @@ class ProfileView extends ProfileState {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: logOut,
+                ),
+              ),
             ],
           ),
         ),
@@ -98,47 +90,53 @@ class ProfileView extends ProfileState {
       padding: const EdgeInsets.all(followagePadding),
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Following",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w100,
+          GestureDetector(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Following",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w100,
+                  ),
                 ),
-              ),
-              Text(
-                "32",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w300,
+                Text(
+                  following.toString(),
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            onTap: followingPage,
           ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Followers",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w100,
+          GestureDetector(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Followers",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w100,
+                  ),
                 ),
-              ),
-              Text(
-                "32",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w300,
+                Text(
+                  followers.toString(),
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            onTap: followersPage,
           ),
         ],
       ),

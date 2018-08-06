@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Login/signup_view.dart';
 import 'package:routeen/UI/tab_home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:routeen/data/data.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore _db = Firestore.instance;
@@ -38,25 +37,13 @@ abstract class SignUpState extends State<SignUp> {
       print(e.toString());
     } finally {
       if (user != null) {
-        await addUserToDB(user, nameController.text);
+        await addUserToDB(_db, user, nameController.text);
         homePage();
       } else {
         showInValidDialog();
       }
     }
     print("Email: ${user.email}");
-  }
-
-  Future addUserToDB(FirebaseUser user, String name) async {
-    Map<String, Object> userMap = new Map();
-    userMap["name"] = name;
-    userMap["streak"] = 0;
-    userMap["email"] = user.email;
-    userMap["dayLastCompleted"] = getToday() - 1;
-    userMap['userUID'] = user.uid;
-    _db.collection('users').document(user.uid).setData(userMap).then((val) {
-      print("user added");
-    });
   }
 
   String nameValidator(String val) {
@@ -106,11 +93,5 @@ abstract class SignUpState extends State<SignUp> {
         );
       },
     );
-  }
-
-  /// returns an int that represents the day of the month
-  int getToday() {
-    DateTime today = DateTime.now();
-    return today.day; // an integer
   }
 }

@@ -59,6 +59,9 @@ class HomeView extends HomeState {
                 ),
               ),
               _tasksList(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+              )
             ],
           ),
         ),

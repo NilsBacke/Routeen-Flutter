@@ -27,13 +27,15 @@ class EditTasksView extends EditTasksState {
   }
 
   Widget _addTaskField() {
+    const multiplier = 0.55;
+    var textFieldWidth = MediaQuery.of(context).size.width * multiplier;
     return new Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           new Container(
-            width: 200.0,
+            width: textFieldWidth,
             child: new TextField(
               controller: controller,
               decoration: new InputDecoration(
