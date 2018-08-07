@@ -84,31 +84,31 @@ class EditTasksView extends EditTasksState {
 
   Widget _buildListItem(
       int index, BuildContext context, DocumentSnapshot document) {
-    return new Dismissible(
-      key: Key(document['name']),
-      background: Container(
-        color: Colors.red,
-        padding: const EdgeInsets.all(12.0),
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            new Icon(Icons.delete_outline),
-            new Icon(Icons.delete_outline),
-          ],
-        ),
-      ),
-      onDismissed: (direction) {
-        removeTask(context, document.documentID);
-      },
-      child: new Column(
-        children: <Widget>[
-          new ListTile(
+    return new Column(
+      children: <Widget>[
+        new Dismissible(
+          key: Key(document['name']),
+          background: Container(
+            color: Colors.red,
+            padding: const EdgeInsets.all(12.0),
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                new Icon(Icons.delete_outline),
+                new Icon(Icons.delete_outline),
+              ],
+            ),
+          ),
+          onDismissed: (direction) {
+            removeTask(context, document.documentID);
+          },
+          child: new ListTile(
             title: new Text(document['name']),
           ),
-          new Divider(),
-        ],
-      ),
+        ),
+        Divider(),
+      ],
     );
   }
 }

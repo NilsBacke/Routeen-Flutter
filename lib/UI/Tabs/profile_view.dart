@@ -17,7 +17,49 @@ class ProfileView extends ProfileState {
         child: CircularProgressIndicator(),
       );
     }
-    return Padding(
+    if (widget.userUID != null) {
+      return Scaffold(
+        body: Stack(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [
+                    0.1,
+                    0.9,
+                  ],
+                  colors: [
+                    Colors.lightBlueAccent[400],
+                    Colors.grey[50],
+                  ],
+                ),
+              ),
+            ),
+            AppBar(
+              title: Text(
+                "Routeen",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300,
+                  fontSize: 28.0,
+                ),
+              ),
+              centerTitle: true,
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+            ),
+            _buildBody(context)
+          ],
+        ),
+      );
+    }
+    return _buildBody(context);
+  }
+
+  Container _buildBody(BuildContext context) {
+    return Container(
       padding: EdgeInsets.only(top: getTopPadding(context)),
       child: SingleChildScrollView(
         child: Center(
@@ -66,16 +108,9 @@ class ProfileView extends ProfileState {
                   style: TextStyle(
                     fontFamily: 'Roboto',
                     color: Color(0xFF1dcaff),
-                    fontSize: 120.0,
+                    fontSize: 140.0,
                     fontWeight: FontWeight.w100,
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IconButton(
-                  icon: Icon(Icons.exit_to_app),
-                  onPressed: logOut,
                 ),
               ),
             ],

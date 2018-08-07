@@ -3,13 +3,16 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:routeen/UI/Login/login_state.dart';
 import 'package:routeen/UI/Tabs/profile_view.dart';
 
 final Firestore db = Firestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class Profile extends StatefulWidget {
+  final String userUID;
+
+  const Profile({this.userUID});
+
   @override
   ProfileView createState() => ProfileView();
 }
@@ -23,16 +26,12 @@ abstract class ProfileState extends State<Profile> {
   bool isLoading = true;
 
   @override
+  Profile get widget => super.widget;
+
+  @override
   initState() {
     super.initState();
     setUserInfo();
-  }
-
-  void logOut() {
-    _auth.signOut();
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) {
-      Login();
-    }));
   }
 
   void setUserInfo() async {
@@ -42,9 +41,9 @@ abstract class ProfileState extends State<Profile> {
         name = snap.data['name'];
         email = snap.data['email'];
         streak = snap.data['streak'];
-        isLoading = false;
         following = snap.data['followingCount'];
         followers = snap.data['followersCount'];
+        isLoading = false;
       });
     }
   }
@@ -54,7 +53,10 @@ abstract class ProfileState extends State<Profile> {
   void followersPage() {}
 
   Future<DocumentSnapshot> getUserSnap() async {
-    var useruid = await getUserUID();
+    var useruid = widget.userUID;
+    if (widget.userUID == null) {
+      useruid = await getUserUID();
+    }
     return db.collection('users').document(useruid).get();
   }
 

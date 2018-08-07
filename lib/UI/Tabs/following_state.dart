@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Tabs/following_view.dart';
+import 'package:routeen/UI/Tabs/profile_state.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore db = Firestore.instance;
@@ -164,6 +165,14 @@ abstract class FollowingState extends State<Following> {
       var newCount = snapshot.data['followersCount'] + 1;
       transaction.update(user2doc, {"followersCount": newCount});
     });
+  }
+
+  void showProfilePage(String useruid) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      return Profile(
+        userUID: useruid,
+      );
+    }));
   }
 
   Future<DocumentReference> getUserDoc() async {

@@ -74,19 +74,30 @@ class FollowingView extends FollowingState {
   Widget _buildListItem(
       int index, BuildContext context, DocumentSnapshot document) {
     return Container(
-      child: ListTile(
-        leading: Icon(Icons.person),
-        title: Text(document.data['name']),
-        trailing: Text(
-          "Current streak: ${document.data['streak']}",
-          style: TextStyle(fontSize: 18.0),
+      child: Card(
+        color: Colors.lightBlue[300],
+        child: ListTile(
+          leading: Container(
+            padding: EdgeInsets.only(right: 12.0),
+            decoration: new BoxDecoration(
+              border: new Border(
+                right: new BorderSide(width: 1.5, color: Colors.white24),
+              ),
+            ),
+            child: Icon(Icons.person_outline, color: Colors.black),
+          ),
+          title: Text(document.data['name']),
+          trailing: Text(
+            "Current streak: ${document.data['streak']}",
+            style: TextStyle(fontSize: 18.0),
+          ),
+          onTap: () {
+            showProfilePage(document.data['userUID']);
+          },
+          onLongPress: () {
+            showRemoveDialog(document.data['name'], document.data['userUID']);
+          },
         ),
-        onTap: () {
-          print('tapped');
-        },
-        onLongPress: () {
-          showRemoveDialog(document.data['name'], document.data['userUID']);
-        },
       ),
     );
   }
