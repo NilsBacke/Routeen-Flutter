@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Tabs/following_state.dart';
 import 'package:material_search/material_search.dart';
+import 'package:routeen/UI/Tabs/user_list_item.dart';
 import 'package:routeen/data/data.dart';
 import 'package:routeen/data/my_material_search_result.dart';
 
@@ -62,42 +62,22 @@ class FollowingView extends FollowingState {
             physics: AlwaysScrollableScrollPhysics(),
             itemCount: snapshot.data.documents.length,
             itemBuilder: (BuildContext context, int index) {
-              return _buildListItem(
-                  index, context, snapshot.data.documents[index]);
+              var document = snapshot.data.documents[index];
+              return UserListItem(
+                title: Text(document.data['name'].toString()),
+                trailing: document.data['streak'].toString(),
+                color: Colors.lightBlue[300],
+                onTap: () {
+                  showProfilePage(document.data['userUID']);
+                },
+                onLongPress: () {
+                  showRemoveDialog(
+                      document.data['name'], document.data['userUID']);
+                },
+              );
             },
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildListItem(
-      int index, BuildContext context, DocumentSnapshot document) {
-    return Container(
-      child: Card(
-        color: Colors.lightBlue[300],
-        child: ListTile(
-          leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-              border: new Border(
-                right: new BorderSide(width: 1.5, color: Colors.white24),
-              ),
-            ),
-            child: Icon(Icons.person_outline, color: Colors.black),
-          ),
-          title: Text(document.data['name']),
-          trailing: Text(
-            "Current streak: ${document.data['streak']}",
-            style: TextStyle(fontSize: 18.0),
-          ),
-          onTap: () {
-            showProfilePage(document.data['userUID']);
-          },
-          onLongPress: () {
-            showRemoveDialog(document.data['name'], document.data['userUID']);
-          },
-        ),
       ),
     );
   }

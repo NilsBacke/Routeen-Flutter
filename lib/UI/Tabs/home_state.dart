@@ -21,6 +21,7 @@ abstract class HomeState extends State<Home> {
   int dayLastCompleted;
   String motivationText = keepItUp; // text that changes depending on streak
   String userUID = '';
+  bool isLoading = true;
 
   @override
   initState() {
@@ -56,7 +57,7 @@ abstract class HomeState extends State<Home> {
         (getToday() - dayLastCompleted == 1 ||
             streak == 0 && dayLastCompleted != getToday())) {
       incrementStreak();
-      saveStreak();
+      await saveStreak();
       dayLastCompleted = getToday();
       incrementStreakDialog();
     }
@@ -90,21 +91,23 @@ abstract class HomeState extends State<Home> {
     var currUserUID = await getUserUID();
     db.runTransaction((transaction) async {
       for (var doc in docs.documents) {
-        // for every user who follows the current user, update that current user's streak
         var followingQuery = doc.reference
             .collection("following")
             .where("userUID", isEqualTo: currUserUID);
         var followingQueryDocs = await followingQuery.getDocuments();
+
+        var followersQuery = doc.reference
+            .collection("followers")
+            .where("userUID", isEqualTo: currUserUID);
+        var followersQueryDocs = await followersQuery.getDocuments();
+
+        // for every user who follows the current user, update that current user's streak
         for (var followingQueryDoc in followingQueryDocs.documents) {
           transaction.update(followingQueryDoc.reference,
               {'streak': streak, 'dayLastCompleted': dayLastCompleted});
         }
 
         // for every user who the current user is following, update that current user's streak
-        var followersQuery = doc.reference
-            .collection("followers")
-            .where("userUID", isEqualTo: currUserUID);
-        var followersQueryDocs = await followersQuery.getDocuments();
         for (var followersQueryDoc in followersQueryDocs.documents) {
           transaction.update(followersQueryDoc.reference,
               {'streak': streak, 'dayLastCompleted': dayLastCompleted});
@@ -123,11 +126,15 @@ abstract class HomeState extends State<Home> {
         // check if nothing saved so far
         await saveStreak();
       }
-      streak = val.data['streak'];
+      setState(() {
+        streak = val.data['streak'];
+        isLoading = false;
+      });
+
       dayLastCompleted = val.data['dayLastCompleted'];
     });
 
-    checkForLossOfStreak();
+    await checkForLossOfStreak();
   }
 
   /// go to the compose page and update the tasks list upon pop back to the home page
@@ -146,12 +153,12 @@ abstract class HomeState extends State<Home> {
   /// checks if the user's streak is lost
   /// streak is lost if there was a more than one day gap
   /// then performs appropriate actions
-  void checkForLossOfStreak() {
+  Future checkForLossOfStreak() async {
     if (getToday() - dayLastCompleted > 1) {
       // loss of streak
       lossOfStreakDialog();
       resetStreak();
-      saveStreak();
+      await saveStreak();
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:routeen/UI/Tabs/profile_view.dart';
+import 'package:routeen/UI/Tabs/user_friends_list.dart';
 
 final Firestore db = Firestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -48,9 +49,23 @@ abstract class ProfileState extends State<Profile> {
     }
   }
 
-  void followingPage() {}
+  void followingPage() {
+    goToPage('following');
+  }
 
-  void followersPage() {}
+  void followersPage() {
+    goToPage('followers');
+  }
+
+  void goToPage(String pageName) async {
+    var useruid = widget.userUID;
+    if (widget.userUID == null) {
+      useruid = await getUserUID();
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      return UserList(userUID: useruid, collectionName: pageName);
+    }));
+  }
 
   Future<DocumentSnapshot> getUserSnap() async {
     var useruid = widget.userUID;

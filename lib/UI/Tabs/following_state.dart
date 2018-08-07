@@ -162,7 +162,7 @@ abstract class FollowingState extends State<Following> {
     DocumentReference user2doc = db.collection('users').document(uid);
     db.runTransaction((transaction) async {
       DocumentSnapshot snapshot = await transaction.get(user2doc);
-      var newCount = snapshot.data['followersCount'] + 1;
+      var newCount = snapshot.data['followersCount'] + amount;
       transaction.update(user2doc, {"followersCount": newCount});
     });
   }

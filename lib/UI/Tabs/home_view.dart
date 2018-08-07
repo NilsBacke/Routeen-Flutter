@@ -6,6 +6,11 @@ import 'home_state.dart';
 class HomeView extends HomeState {
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Padding(
       padding: EdgeInsets.only(top: getTopPadding(context)),
       child: new SingleChildScrollView(
