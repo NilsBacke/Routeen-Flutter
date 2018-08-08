@@ -9,14 +9,14 @@ class EditTasksView extends EditTasksState {
     return Padding(
       padding: EdgeInsets.only(top: getTopPadding(context)),
       child: Container(
-        child: new Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            new Padding(
+            Padding(
               padding: const EdgeInsets.all(12.0),
             ),
             _addTaskField(),
-            new Padding(
+            Padding(
               padding: const EdgeInsets.only(top: 16.0),
             ),
             _tasksList(),
@@ -29,25 +29,84 @@ class EditTasksView extends EditTasksState {
   Widget _addTaskField() {
     const multiplier = 0.55;
     var textFieldWidth = MediaQuery.of(context).size.width * multiplier;
-    return new Container(
+    print('num tasks: $numTasks');
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          new Container(
-            width: textFieldWidth,
-            child: new TextField(
-              controller: controller,
-              decoration: new InputDecoration(
-                hintText: "Brush teeth",
-                border: new OutlineInputBorder(),
-              ),
+      child: numTasks == 0
+          ? _newUserTextfieldAndButton(textFieldWidth)
+          : _textfieldAndButton(textFieldWidth),
+    );
+  }
+
+  Widget _textfieldAndButton(double textFieldWidth) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+          width: textFieldWidth,
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: "Brush teeth",
+              border: OutlineInputBorder(),
             ),
           ),
-          new RaisedButton(
-            color: const Color(0xFF1dcaff),
-            onPressed: addTaskToList,
-            child: new Text("Add"),
+        ),
+        RaisedButton(
+          color: const Color(0xFF1dcaff),
+          onPressed: addTaskToList,
+          child: Text("Add"),
+        ),
+      ],
+    );
+  }
+
+  Widget _newUserTextfieldAndButton(double textFieldWidth) {
+    return Container(
+      height: 300.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                width: textFieldWidth,
+                child: TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    hintText: "Brush teeth",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              RaisedButton(
+                color: const Color(0xFF1dcaff),
+                onPressed: addTaskToList,
+                child: Text("Add"),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                child: Center(
+                  child: Text(
+                    "Type your new task in here",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              Container(
+                child: Center(
+                  child: Text(
+                    "And press here to add it to the list",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -58,7 +117,7 @@ class EditTasksView extends EditTasksState {
     if (userUID == '') {
       return Expanded(child: Center(child: CircularProgressIndicator()));
     }
-    return new Expanded(
+    return Expanded(
       child: StreamBuilder(
         stream: db
             .collection('users')
@@ -84,27 +143,27 @@ class EditTasksView extends EditTasksState {
 
   Widget _buildListItem(
       int index, BuildContext context, DocumentSnapshot document) {
-    return new Column(
+    return Column(
       children: <Widget>[
-        new Dismissible(
+        Dismissible(
           key: Key(document['name']),
           background: Container(
             color: Colors.red,
             padding: const EdgeInsets.all(12.0),
-            child: new Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                new Icon(Icons.delete_outline),
-                new Icon(Icons.delete_outline),
+                Icon(Icons.delete_outline),
+                Icon(Icons.delete_outline),
               ],
             ),
           ),
           onDismissed: (direction) {
             removeTask(context, document.documentID);
           },
-          child: new ListTile(
-            title: new Text(document['name']),
+          child: ListTile(
+            title: Text(document['name']),
           ),
         ),
         Divider(),

@@ -91,6 +91,15 @@ class HomeView extends HomeState {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             }
+            if (snapshot.data.documents.length == 0) {
+              return Center(
+                heightFactor: 2.0,
+                child: Text(
+                  "Looks like you haven't added any daily tasks yet! Go to the Tasks page to add new tasks.",
+                  textAlign: TextAlign.center,
+                ),
+              );
+            }
             return ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,

@@ -17,12 +17,12 @@ abstract class EditTasksState extends State<EditTasks> {
   TextEditingController controller =
       new TextEditingController(); // for the add task EditText
   String userUID = '';
+  int numTasks;
 
   @override
   initState() {
     super.initState();
-    setUserUID();
-    // getTasks();
+    setUserUID(); // calls set num tasks
   }
 
   /// On press of the add task button
@@ -38,6 +38,7 @@ abstract class EditTasksState extends State<EditTasks> {
       controller.text = ""; // reset TextEdit text
     });
     addTaskToDB(name, false);
+    setNumTasks();
   }
 
   /// saves a task to the database
@@ -54,11 +55,23 @@ abstract class EditTasksState extends State<EditTasks> {
     getTasksCollection().then((val) {
       val.document(docId).delete();
     });
+    setNumTasks();
     Scaffold.of(context).showSnackBar(
           SnackBar(
             content: Text("Deleted task successfully"),
           ),
         );
+  }
+
+  Future setNumTasks() async {
+    var docs = await db
+        .collection('users')
+        .document(userUID)
+        .collection('tasks')
+        .getDocuments();
+    setState(() {
+      numTasks = docs.documents.length;
+    });
   }
 
   Future<FirebaseUser> getUser() async {
@@ -80,5 +93,6 @@ abstract class EditTasksState extends State<EditTasks> {
     setState(() {
       userUID = _userUID;
     });
+    setNumTasks();
   }
 }
