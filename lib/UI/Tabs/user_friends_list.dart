@@ -78,7 +78,7 @@ class _UserListState extends State<UserList> {
               var document = snapshot.data.documents[index];
               return UserListItem(
                 title: Text(document.data['name'].toString()),
-                trailing: document.data['streak'].toString(),
+                trailing: Text(document.data['streak'].toString()),
                 color: Colors.lightBlue[300],
                 onTap: () {
                   showProfilePage(document.data['userUID']);
