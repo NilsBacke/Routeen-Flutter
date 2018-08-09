@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:routeen/UI/Tabs/following_view.dart';
 import 'package:routeen/UI/Tabs/profile_state.dart';
+import 'package:routeen/data/custom_page_transition.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore db = Firestore.instance;
@@ -15,6 +17,15 @@ class Following extends StatefulWidget {
 }
 
 abstract class FollowingState extends State<Following> {
+  List<Color> colorList = [
+    Colors.white,
+    Colors.white70,
+    Colors.black45,
+    Colors.black54,
+    Colors.black87,
+    Colors.black
+  ];
+
   List<User> usersList = List();
   String userUID = '';
 
@@ -167,12 +178,14 @@ abstract class FollowingState extends State<Following> {
     });
   }
 
-  void showProfilePage(String useruid) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      return Profile(
-        userUID: useruid,
-      );
-    }));
+  void showProfilePage(String useruid, String name) {
+    Navigator.of(context).push(
+          CustomPageTransition(
+            Profile(
+              userUID: useruid,
+            ),
+          ),
+        );
   }
 
   Future<DocumentReference> getUserDoc() async {

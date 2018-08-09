@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class UserListItem extends StatefulWidget {
   final Widget title;
-  final String trailing;
+  final Widget trailing;
   final Color color;
   final GestureTapCallback onTap;
   final GestureLongPressCallback onLongPress;
@@ -31,10 +31,7 @@ class _UserListItemState extends State<UserListItem> {
             child: Icon(Icons.person_outline, color: Colors.black),
           ),
           title: widget.title,
-          trailing: Text(
-            "Current streak: ${widget.trailing}",
-            style: TextStyle(fontSize: 18.0),
-          ),
+          trailing: widget.trailing,
           onTap: widget.onTap,
           onLongPress: widget.onLongPress,
         ),

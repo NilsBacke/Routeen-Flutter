@@ -12,7 +12,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 class Profile extends StatefulWidget {
   final String userUID;
 
-  const Profile({this.userUID});
+  Profile({this.userUID});
 
   @override
   ProfileView createState() => ProfileView();
@@ -25,9 +25,6 @@ abstract class ProfileState extends State<Profile> {
   int followers;
   int streak;
   bool isLoading = true;
-
-  @override
-  Profile get widget => super.widget;
 
   @override
   initState() {

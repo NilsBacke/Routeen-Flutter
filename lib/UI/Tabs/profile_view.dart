@@ -70,12 +70,15 @@ class ProfileView extends ProfileState {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(namePadding),
-                child: Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 40.0,
-                    fontWeight: FontWeight.w100,
-                    color: Colors.white,
+                child: Hero(
+                  tag: name,
+                  child: Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 40.0,
+                      fontWeight: FontWeight.w100,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

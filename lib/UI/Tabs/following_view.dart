@@ -64,11 +64,32 @@ class FollowingView extends FollowingState {
             itemBuilder: (BuildContext context, int index) {
               var document = snapshot.data.documents[index];
               return UserListItem(
-                title: Text(document.data['name'].toString()),
-                trailing: document.data['streak'].toString(),
+                title: Hero(
+                  tag: document.data['name'].toString(),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Text(
+                      document.data['name'].toString(),
+                      style: TextStyle(
+                        color: index >= colorList.length
+                            ? Colors.black
+                            : colorList[index],
+                      ),
+                    ),
+                  ),
+                ),
+                trailing: Text(
+                  "Current streak: ${document.data['streak'].toString()}",
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      color: index >= colorList.length
+                          ? Colors.black
+                          : colorList[index]),
+                ),
                 color: Colors.lightBlue[300],
                 onTap: () {
-                  showProfilePage(document.data['userUID']);
+                  showProfilePage(
+                      document.data['userUID'], document.data['name']);
                 },
                 onLongPress: () {
                   showRemoveDialog(
