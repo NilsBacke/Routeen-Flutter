@@ -126,10 +126,12 @@ abstract class HomeState extends State<Home> {
         // check if nothing saved so far
         await saveStreak();
       }
-      setState(() {
-        streak = val.data['streak'];
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          streak = val.data['streak'];
+          isLoading = false;
+        });
+      }
 
       dayLastCompleted = val.data['dayLastCompleted'];
     });

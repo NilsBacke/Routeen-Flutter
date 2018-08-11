@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:routeen/UI/Tabs/popup_bubble.dart';
 import 'package:routeen/data/data.dart';
 import 'edit_tasks_state.dart';
 
@@ -63,9 +64,9 @@ class EditTasksView extends EditTasksState {
 
   Widget _newUserTextfieldAndButton(double textFieldWidth) {
     return Container(
-      height: 300.0,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,22 +90,18 @@ class EditTasksView extends EditTasksState {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                child: Center(
-                  child: Text(
-                    "Type your new task in here",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+              PopupBubble(
+                nipLocation: NipLocation.TOP,
+                body: Text('Type your new task in here'),
+                color: Colors.lime,
               ),
-              Container(
-                child: Center(
-                  child: Text(
-                    "And press here to add it to the list",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+              PopupBubble(
+                nipLocation: NipLocation.TOP,
+                body: Text('And press here to add it to the list'),
+                width: 100.0,
+                color: Colors.lime,
               ),
             ],
           ),

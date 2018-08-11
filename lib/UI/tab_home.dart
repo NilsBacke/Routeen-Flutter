@@ -84,34 +84,46 @@ class _TabBarHomeState extends State<TabBarHome> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,
+              // color: Colors.lightBlueAccent,
             ),
             title: Text(
               "Home",
+              // style: TextStyle(color: Colors.lightBlueAccent),
             ),
+            // backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.edit,
+              // color: Colors.lightBlueAccent,
             ),
             title: Text(
               "Tasks",
+              // style: TextStyle(color: Colors.lightBlueAccent),
             ),
+            // backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.people,
+              // color: Colors.lightBlueAccent,
             ),
             title: Text(
               "Following",
+              // style: TextStyle(color: Colors.lightBlueAccent),
             ),
+            // backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.person_outline,
+              // color: Colors.lightBlueAccent,
             ),
             title: Text(
               "Profile",
+              // style: TextStyle(color: Colors.lightBlueAccent),
             ),
+            // backgroundColor: Colors.white,
           ),
         ],
       ),
